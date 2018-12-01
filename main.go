@@ -1,16 +1,15 @@
 package main
 
 import (
+	"github.com/flohero/Spongebot/api"
 	"github.com/flohero/Spongebot/bot"
 	"github.com/flohero/Spongebot/database"
-	"time"
+	"os"
 )
 
 func main() {
 	persistence := database.InitDb()
-	go bot.Listen("token", persistence)
-	for {
-		time.Sleep(time.Minute)
-	}
+	go bot.Listen(os.Getenv("token"), persistence)
+	api.Serve(persistence)
 
 }

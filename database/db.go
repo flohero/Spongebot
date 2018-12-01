@@ -30,6 +30,7 @@ func (p *Persistence) initData() {
 	p.db.Create(&model.Command{Word: "ping", Response: "pong", Prefix: false})
 }
 
+// TODO doestn return a value
 func (p *Persistence) FindAllCommands() ([]*model.Command, error) {
 	rows, err := p.db.Table("commands").Rows()
 	if err != nil {

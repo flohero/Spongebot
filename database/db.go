@@ -27,10 +27,13 @@ func (p *Persistence) createDB() {
 }
 
 func (p *Persistence) initData() {
-	p.db.Create(&model.Command{Word: "ping", Response: "pong", Prefix: false})
+	p.CreateCommand(&model.Command{Word: "ping", Response: "pong", Prefix: false})
 }
 
-// TODO doestn return a value
+func (p *Persistence) CreateCommand(cmd *model.Command) {
+	p.db.Create(&cmd)
+}
+
 func (p *Persistence) FindAllCommands() ([]*model.Command, error) {
 	rows, err := p.db.Table("commands").Rows()
 	if err != nil {
@@ -39,7 +42,7 @@ func (p *Persistence) FindAllCommands() ([]*model.Command, error) {
 	commands := make([]*model.Command, 0)
 	for rows.Next() {
 		cmd := &model.Command{}
-		if rows.Scan(&cmd.Id, &cmd.Word, &cmd.Response) != nil {
+		if err := rows.Scan(&cmd.Id, &cmd.Word, &cmd.Response, &cmd.Prefix); err != nil {
 			return nil, err
 		}
 		commands = append(commands, cmd)
@@ -50,5 +53,11 @@ func (p *Persistence) FindAllCommands() ([]*model.Command, error) {
 func (p *Persistence) FindCommandByWord(word string) (cmd *model.Command) {
 	cmd = &model.Command{}
 	p.db.Where(&model.Command{Word: word}).First(cmd)
+	return cmd
+}
+
+func (p *Persistence) FindCommandById(id int) (cmd *model.Command) {
+	cmd = &model.Command{}
+	p.db.Where(&model.Command{Id: id}).First(cmd)
 	return cmd
 }

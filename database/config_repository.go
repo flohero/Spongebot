@@ -12,6 +12,12 @@ func (p *Persistence) FindConfigById(id int) (conf *model.Config) {
 	return conf
 }
 
+func (p *Persistence) FindConfigByToken(token string) (config *model.Config) {
+	config = &model.Config{}
+	p.db.Where(&model.Config{Token: token}).First(config)
+	return config
+}
+
 func (p *Persistence) FindAllConfigs() ([]*model.Config, error) {
 	rows, err := p.db.Table("configs").Rows()
 	if err != nil {

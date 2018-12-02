@@ -21,5 +21,4 @@ func main() {
 	}
 	go bot.Listen(token, persistence)
 	api.Serve(persistence)
-
 }

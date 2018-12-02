@@ -39,10 +39,11 @@ func (c *Controller) CreateCommand(w http.ResponseWriter, r *http.Request) {
 		badRequest(w, err)
 		return
 	}
-	cmd := c.persistence.FindCommandByWord(temp.Word)
-	if cmd == nil {
-		cmd := &model.Command{Word: temp.Word, Response: temp.Response, Prefix: temp.Prefix}
+	var cmd *model.Command
+	cmd = c.persistence.FindCommandByWord(temp.Word)
+	if cmd.Id == 0 {
+		cmd = &model.Command{Word: temp.Word, Response: temp.Response, Prefix: temp.Prefix}
 		c.persistence.CreateCommand(cmd)
 	}
-	writeJson(w, &c)
+	writeJson(w, &cmd)
 }

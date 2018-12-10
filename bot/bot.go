@@ -31,7 +31,7 @@ func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate
 		return
 	}
 	cmdStr := strings.Split(msg.Content, " ")[0]
-	if cmd := b.persistence.FindCommandByWord(cmdStr); cmd.Id != 0 {
+	if cmd := b.persistence.FindCommandByWordAndPrefix(cmdStr[len(cmdStr)-(len(cmdStr)-1):], string([]rune(cmdStr)[0]) == prefix); cmd.Id != 0 {
 		b.respondToMessage(session, msg, cmd.Response)
 	}
 }

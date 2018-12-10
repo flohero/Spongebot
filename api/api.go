@@ -5,6 +5,7 @@ import (
 	"github.com/flohero/Spongebot/database"
 	"github.com/gorilla/mux"
 	"net/http"
+	"strconv"
 )
 
 type Controller struct {
@@ -55,4 +56,12 @@ func corsAndContentTypeHeader(next http.Handler) http.Handler {
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 		next.ServeHTTP(w, r)
 	})
+}
+
+func getIdFromPath(w http.ResponseWriter, r *http.Request) (int, error) {
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		return -1, err
+	}
+	return id, nil
 }

@@ -4,9 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/flohero/Spongebot/database/model"
-	"github.com/gorilla/mux"
 	"net/http"
-	"strconv"
 )
 
 func (c *Controller) GetAllConfigs(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +17,7 @@ func (c *Controller) GetAllConfigs(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Controller) GetConfigById(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	id, err := getIdFromPath(w, r)
 	if err != nil {
 		badRequest(w, err)
 		return

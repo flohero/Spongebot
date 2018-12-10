@@ -33,3 +33,9 @@ func (p *Persistence) FindCommandById(id int) (cmd *model.Command) {
 	p.db.Where(&model.Command{Id: id}).First(cmd)
 	return cmd
 }
+
+func (p *Persistence) FindCommandByWordAndPrefix(word string, prefix bool) (cmd *model.Command) {
+	cmd = &model.Command{}
+	p.db.Where(&model.Command{Word: word, Prefix: prefix}).First(cmd)
+	return cmd
+}

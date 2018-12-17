@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/flohero/Spongebot/database"
+	"github.com/flohero/Spongebot/database/model"
 	"strings"
 )
 
@@ -13,8 +14,8 @@ type Bot struct {
 	persistence *database.Persistence
 }
 
-func Listen(token string, persistence *database.Persistence) {
-	discord, err := discordgo.New(fmt.Sprintf("Bot %s", token))
+func Listen(config *model.Config, persistence *database.Persistence) {
+	discord, err := discordgo.New(fmt.Sprintf("Bot %s", config.Token))
 	if err != nil {
 		panic(err)
 	}
@@ -31,7 +32,12 @@ func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate
 		return
 	}
 	cmdStr := strings.Split(msg.Content, " ")[0]
-	if cmd := b.persistence.FindCommandByWordAndPrefix(cmdStr[len(cmdStr)-(len(cmdStr)-1):], string([]rune(cmdStr)[0]) == prefix); cmd.Id != 0 {
+	prf := string([]rune(cmdStr)[0]) == prefix
+	command := cmdStr
+	if prf {
+		command = cmdStr[len(cmdStr)-(len(cmdStr)-1):]
+	}
+	if cmd := b.persistence.FindCommandByWordAndPrefix(command, prf); cmd.Id != 0 {
 		b.respondToMessage(session, msg, cmd.Response)
 	}
 }

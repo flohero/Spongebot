@@ -40,7 +40,7 @@ func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate
 	if prf {
 		command = cmdStr[len(cmdStr)-(len(cmdStr)-1):]
 	}
-	if cmd := b.persistence.FindCommandByWordAndPrefix(command, prf); cmd.Id != 0 {
+	if cmd := b.persistence.FindCommandByWord(command); cmd.Id != 0 && cmd.Prefix == prf {
 		b.respondToMessage(session, msg, cmd.Response)
 	}
 }

@@ -32,6 +32,9 @@ func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate
 		return
 	}
 	cmdStr := strings.Split(msg.Content, " ")[0]
+	if len([]rune(cmdStr)) <= 0 {
+		return
+	}
 	prf := string([]rune(cmdStr)[0]) == prefix
 	command := cmdStr
 	if prf {

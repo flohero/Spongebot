@@ -2,8 +2,10 @@ module github.com/flohero/Spongebot
 
 require (
 	github.com/bwmarrin/discordgo v0.19.0
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gorilla/mux v1.6.2
 	github.com/jinzhu/gorm v1.9.2
 	github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a // indirect
 	github.com/mattn/go-sqlite3 v1.10.0 // indirect
+	golang.org/x/crypto v0.0.0-20181030102418-4d3f4d9ffa16
 )

@@ -11,7 +11,8 @@ import (
 //TODO Move the init of the bot into the api folder, so users can start the bot from the website
 func main() {
 	persistence := database.InitDb()
-	conf := persistence.FindConfigById(1)
+	var conf *model.Config
+	conf = persistence.FindConfigById(1)
 	var token string
 	if conf.Id != 0 {
 		println("Used token from DB")
@@ -22,8 +23,10 @@ func main() {
 			panic("No token provided")
 		}
 		println("Used token from Env")
-		persistence.CreateConfig(&model.Config{Token: token})
+		conf.Token = token
+		conf.Prefix = "_"
+		persistence.CreateConfig(conf)
 	}
-	go bot.Listen(token, persistence)
+	go bot.Listen(conf, persistence)
 	api.Serve(persistence)
 }

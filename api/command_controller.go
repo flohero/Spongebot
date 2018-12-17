@@ -7,6 +7,8 @@ import (
 	"net/http"
 )
 
+// GetAllCommands takes a http.ResponseWriter and a *http.Request.
+// It will write all Commands in JSON Format to writer
 func (c *Controller) GetAllCommands(writer http.ResponseWriter, request *http.Request) {
 	cmds, err := c.persistence.FindAllCommands()
 	if err != nil {

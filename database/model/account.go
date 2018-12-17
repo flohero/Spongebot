@@ -11,5 +11,5 @@ type Account struct {
 	Id       int    `gorm:"PRIMARY_KEY"json:"id"`
 	Email    string `gorm:"unique;not null"json:"email"`
 	Password string `gorm:"not null"json:"password"`
-	Token    string `sql:"-";json:"token"`
+	Token    string `sql:"-"json:"token"`
 }

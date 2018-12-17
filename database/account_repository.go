@@ -20,15 +20,15 @@ func (p *Persistence) IsValid(acc *model.Account) (bool, error) {
 	return true, nil
 }
 
-func (p *Persistence) CreateAccount(acc *model.Account) error {
+func (p *Persistence) CreateAccount(acc *model.Account) (error, *model.Account) {
 	if ok, err := p.IsValid(acc); !ok {
-		return err
+		return err, nil
 	}
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(acc.Password), bcrypt.DefaultCost)
 	acc.Password = string(hashedPassword)
 	p.db.Create(acc)
 	if acc.Id <= 0 {
-		return errors.New("Failed to create account")
+		return errors.New("Failed to create account"), nil
 	}
 	tk := &model.Token{UserId: acc.Id}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
@@ -36,19 +36,19 @@ func (p *Persistence) CreateAccount(acc *model.Account) error {
 	acc.Token = tokenString
 
 	acc.Password = "" //delete password
-	return nil
+	return nil, acc
 }
 
-func (p *Persistence) Login(email, password string) error {
+func (p *Persistence) Login(email, password string) (error, *model.Account) {
 
 	account := &model.Account{}
 	if p.FindByEmail(email).Email == "" {
-		return errors.New("Email not found")
+		return errors.New("Email not found"), nil
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(account.Password), []byte(password))
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword { //Password does not match!
-		return errors.New("Invalid login credentials. Please try again")
+		return errors.New("Invalid login credentials. Please try again"), nil
 	}
 	//Worked! Logged In
 	account.Password = ""
@@ -59,7 +59,7 @@ func (p *Persistence) Login(email, password string) error {
 	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
 	account.Token = tokenString //Store the token in the response
 
-	return nil
+	return nil, account
 }
 
 func (p *Persistence) FindByEmail(email string) (acc *model.Account) {

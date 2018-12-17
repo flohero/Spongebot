@@ -35,8 +35,8 @@ func (c *Controller) GetCommandById(w http.ResponseWriter, r *http.Request) {
 func (c *Controller) CreateCommand(w http.ResponseWriter, r *http.Request) {
 	var temp model.Command
 	err := json.NewDecoder(r.Body).Decode(&temp)
-	if err != nil {
-		badRequest(w, err)
+	if err != nil || temp.Word == "" || temp.Response == "" {
+		badRequest(w, errors.New("Malformed body"))
 		return
 	}
 	var cmd *model.Command

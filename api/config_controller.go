@@ -33,8 +33,8 @@ func (c *Controller) GetConfigById(w http.ResponseWriter, r *http.Request) {
 func (c *Controller) CreateConfig(w http.ResponseWriter, r *http.Request) {
 	var temp model.Config
 	err := json.NewDecoder(r.Body).Decode(&temp)
-	if err != nil {
-		badRequest(w, err)
+	if err != nil || temp.Token == "" {
+		badRequest(w, errors.New("Malformed body"))
 		return
 	}
 	var config *model.Config

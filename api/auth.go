@@ -28,8 +28,7 @@ func (c *Controller) JwtAuthentication(next http.Handler) http.Handler {
 		}
 
 		tokenHeader := r.Header.Get("Authorization") //Grab the token from the header
-
-		if tokenHeader == "" { //Token is missing, returns with error code 403 Unauthorized
+		if tokenHeader == "" {                       //Token is missing, returns with error code 403 Unauthorized
 			forbidden(w, errors.New("Missing auth token"))
 			return
 		}

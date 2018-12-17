@@ -45,5 +45,6 @@ func (c *Controller) CreateCommand(w http.ResponseWriter, r *http.Request) {
 		cmd = &model.Command{Word: temp.Word, Response: temp.Response, Prefix: temp.Prefix}
 		c.persistence.CreateCommand(cmd)
 	}
+	created(w)
 	writeJson(w, &cmd)
 }

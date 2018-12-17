@@ -49,3 +49,7 @@ func getIdFromPath(w http.ResponseWriter, r *http.Request) (int, error) {
 	}
 	return id, nil
 }
+
+func created(w http.ResponseWriter) {
+	w.WriteHeader(201)
+}

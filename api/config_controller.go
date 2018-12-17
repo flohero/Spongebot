@@ -43,5 +43,6 @@ func (c *Controller) CreateConfig(w http.ResponseWriter, r *http.Request) {
 		config = &model.Config{Token: temp.Token}
 		c.persistence.CreateConfig(config)
 	}
+	created(w)
 	writeJson(w, &config)
 }

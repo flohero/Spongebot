@@ -2,8 +2,10 @@ package api
 
 import (
 	"github.com/flohero/Spongebot/database"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"net/http"
+	"os"
 )
 
 type Controller struct {
@@ -24,5 +26,9 @@ func Serve(persistence *database.Persistence) {
 	r.HandleFunc("/api/configs", c.GetAllConfigs).Methods("GET")
 	r.HandleFunc("/api/configs", c.CreateConfig).Methods("POST")
 	r.HandleFunc("/api/configs/{id}", c.GetConfigById).Methods("GET")
-	panic(http.ListenAndServe(":8080", r))
+
+	r.HandleFunc("/api/user/new", c.CreateAccount).Methods("POST")
+	r.HandleFunc("/api/user/login", c.Authenticate).Methods("POST")
+	loggedRouter := handlers.LoggingHandler(os.Stdout, r)
+	panic(http.ListenAndServe(":8080", loggedRouter))
 }

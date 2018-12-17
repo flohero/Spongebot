@@ -25,6 +25,7 @@ func InitDb() *Persistence {
 func (p *Persistence) createDB() {
 	p.db.CreateTable(&model.Command{})
 	p.db.CreateTable(&model.Config{})
+	p.db.CreateTable(&model.Account{})
 }
 
 func (p *Persistence) initData() {

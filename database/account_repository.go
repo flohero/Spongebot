@@ -6,15 +6,14 @@ import (
 	"github.com/flohero/Spongebot/database/model"
 	"golang.org/x/crypto/bcrypt"
 	"os"
-	"regexp"
 )
 
 func (p *Persistence) IsValid(acc *model.Account) (bool, error) {
-	emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	/*emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 	if !emailRegex.MatchString(acc.Email) {
 		return false, errors.New("Not a valid email")
-	}
-	if p.FindByEmail(acc.Email).Email != "" {
+	}*/
+	if p.FindByUsername(acc.Username).Username != "" {
 		return false, errors.New("")
 	}
 	return true, nil
@@ -39,11 +38,11 @@ func (p *Persistence) CreateAccount(acc *model.Account) (error, *model.Account) 
 	return nil, acc
 }
 
-func (p *Persistence) Login(email, password string) (error, *model.Account) {
+func (p *Persistence) Login(username, password string) (error, *model.Account) {
 
 	account := &model.Account{}
-	if p.FindByEmail(email).Email == "" {
-		return errors.New("Email not found"), nil
+	if account = p.FindByUsername(username); account.Username == "" {
+		return errors.New("Username not found"), nil
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(account.Password), []byte(password))
@@ -62,8 +61,8 @@ func (p *Persistence) Login(email, password string) (error, *model.Account) {
 	return nil, account
 }
 
-func (p *Persistence) FindByEmail(email string) (acc *model.Account) {
+func (p *Persistence) FindByUsername(username string) (acc *model.Account) {
 	acc = &model.Account{}
-	p.db.Where(&model.Account{Email: email}).First(acc)
+	p.db.Where(&model.Account{Username: username}).First(acc)
 	return acc
 }

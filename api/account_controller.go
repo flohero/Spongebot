@@ -25,12 +25,12 @@ func (c *Controller) CreateAccount(w http.ResponseWriter, r *http.Request) {
 func (c *Controller) Authenticate(w http.ResponseWriter, r *http.Request) {
 	account := &model.Account{}
 	err := json.NewDecoder(r.Body).Decode(account) //decode the request body into struct and failed if any error occur
-	if err != nil {
+	if err != nil || account.Username == "" || account.Password == "" {
 		badRequest(w, err)
 		return
 	}
 
-	err, account = c.persistence.Login(account.Email, account.Password)
+	err, account = c.persistence.Login(account.Username, account.Password)
 	if err != nil {
 		forbidden(w, err)
 		return

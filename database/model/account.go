@@ -9,7 +9,7 @@ type Token struct {
 
 type Account struct {
 	Id       int    `gorm:"PRIMARY_KEY"json:"id"`
-	Email    string `gorm:"unique;not null"json:"email"`
+	Username string `gorm:"unique;not null"json:"username"`
 	Password string `gorm:"not null"json:"password"`
 	Token    string `sql:"-"json:"token"`
 }

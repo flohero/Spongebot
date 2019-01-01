@@ -5,8 +5,17 @@ import (
 	"github.com/flohero/Spongebot/bot"
 	"github.com/flohero/Spongebot/database"
 	"github.com/flohero/Spongebot/database/model"
+	"github.com/joho/godotenv"
+	"log"
 	"os"
 )
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
 
 //TODO Move the init of the bot into the api folder, so users can start the bot from the website
 func main() {

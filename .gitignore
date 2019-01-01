@@ -1,3 +1,4 @@
+.env
 bot.db
 ./build/
 # Created by https://www.gitignore.io/api/go,windows,intellij+all

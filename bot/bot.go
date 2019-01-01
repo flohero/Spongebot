@@ -5,6 +5,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/flohero/Spongebot/database"
 	"github.com/flohero/Spongebot/database/model"
+	"github.com/starlight-go/starlight"
 	"strings"
 )
 
@@ -12,6 +13,11 @@ const prefix string = "_"
 
 type Bot struct {
 	persistence *database.Persistence
+}
+
+type scriptResult struct {
+	Message string
+	Result  string
 }
 
 func Listen(config *model.Config, persistence *database.Persistence) {
@@ -41,7 +47,16 @@ func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate
 		command = cmdStr[len(cmdStr)-(len(cmdStr)-1):]
 	}
 	if cmd := b.persistence.FindCommandByWord(command); cmd.Id != 0 && cmd.Prefix == prf {
-		b.respondToMessage(session, msg, cmd.Response)
+		if cmd.Script {
+			res, err := execScript(msg.Content, cmd)
+			if err != nil {
+				fmt.Printf("\nError running script: %s", err)
+				return
+			}
+			b.respondToMessage(session, msg, res)
+		} else {
+			b.respondToMessage(session, msg, cmd.Response)
+		}
 	}
 }
 
@@ -50,4 +65,18 @@ func (b *Bot) respondToMessage(session *discordgo.Session, msg *discordgo.Messag
 	if err != nil {
 		fmt.Printf("Error sending message: %s", err)
 	}
+}
+
+func execScript(message string, cmd *model.Command) (string, error) {
+	s := &scriptResult{
+		Message: message,
+	}
+	globals := map[string]interface{}{
+		"s": s,
+	}
+	_, err := starlight.Eval([]byte(cmd.Response), globals, nil)
+	if err != nil {
+		return "", err
+	}
+	return s.Result, nil
 }

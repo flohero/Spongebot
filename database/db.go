@@ -23,6 +23,7 @@ func InitDb() *Persistence {
 }
 
 func (p *Persistence) createDB() {
+	p.db.DropTable(&model.Command{})
 	p.db.DropTable(&model.Account{})
 	p.db.CreateTable(&model.Command{})
 	p.db.CreateTable(&model.Config{})
@@ -30,5 +31,9 @@ func (p *Persistence) createDB() {
 }
 
 func (p *Persistence) initData() {
-	p.CreateCommand(&model.Command{Word: "ping", Response: "pong", Prefix: false})
+	p.CreateCommand(&model.Command{Word: "ping", Response: "pong", Script: false, Prefix: false})
+	p.CreateCommand(&model.Command{Word: "peng", Response: "s.Result = s.Message.upper()", Script: true, Prefix: false})
+	s := "s.Result = \"|\".join(s.Message.split(\" \"))"
+	p.CreateCommand(&model.Command{Word: "hello", Response: s, Script: true, Prefix: false})
+	p.CreateAccount(&model.Account{Username: "sponge", Password: "bot"})
 }

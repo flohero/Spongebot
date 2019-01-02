@@ -17,7 +17,6 @@ func init() {
 	}
 }
 
-//TODO Move the init of the bot into the api folder, so users can start the bot from the website
 func main() {
 	persistence := database.InitDb()
 	var conf *model.Config

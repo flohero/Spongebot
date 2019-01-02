@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"github.com/flohero/Spongebot/database/model"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"os"
 )
 
 type Persistence struct {
@@ -12,7 +13,7 @@ type Persistence struct {
 }
 
 func InitDb() *Persistence {
-	db, err := gorm.Open("sqlite3", "bot.db")
+	db, err := connectToPostgres()
 	if err != nil {
 		panic(fmt.Sprintf("Error opening DB: %s", err.Error()))
 	}
@@ -20,6 +21,20 @@ func InitDb() *Persistence {
 	p.createDB()
 	p.initData()
 	return p
+}
+
+func connectToPostgres() (*gorm.DB, error) {
+	host := os.Getenv("POSTGRES_HOST")
+	port := os.Getenv("POSTGRES_PORT")
+	user := os.Getenv("POSTGRES_USER")
+	pw := os.Getenv("POSTGRES_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+	return gorm.Open("postgres",
+		fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", host, port, user, dbName, pw))
+}
+
+func connectToSqlite() (*gorm.DB, error) {
+	return gorm.Open("sqlite3", "bot.db")
 }
 
 func (p *Persistence) createDB() {
@@ -31,9 +46,9 @@ func (p *Persistence) createDB() {
 }
 
 func (p *Persistence) initData() {
-	p.CreateCommand(&model.Command{Word: "ping", Response: "pong", Script: false, Prefix: false})
-	p.CreateCommand(&model.Command{Word: "peng", Response: "s.Result = s.Message.upper()", Script: true, Prefix: false})
+	p.CreateCommand(&model.Command{Regex: "^ping", Description: "Will response with pong.", Response: "pong", Script: false, Prefix: false})
+	p.CreateCommand(&model.Command{Regex: "peng", Description: "This will make your message uppercase.", Response: "s.Result = s.Message.upper()", Script: true, Prefix: false})
 	s := "s.Result = \"|\".join(s.Message.split(\" \"))"
-	p.CreateCommand(&model.Command{Word: "hello", Response: s, Script: true, Prefix: false})
+	p.CreateCommand(&model.Command{Regex: "*", Description: "This will replace all whitespaces with a pipe.", Response: s, Script: true, Prefix: false})
 	p.CreateAccount(&model.Account{Username: "sponge", Password: "bot"})
 }

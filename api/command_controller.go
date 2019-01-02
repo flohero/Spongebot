@@ -35,14 +35,14 @@ func (c *Controller) GetCommandById(w http.ResponseWriter, r *http.Request) {
 func (c *Controller) CreateCommand(w http.ResponseWriter, r *http.Request) {
 	var temp model.Command
 	err := json.NewDecoder(r.Body).Decode(&temp)
-	if err != nil || temp.Word == "" || temp.Response == "" {
+	if err != nil || temp.Regex == "" || temp.Response == "" {
 		badRequest(w, errors.New("Malformed body"))
 		return
 	}
 	var cmd *model.Command
-	cmd = c.persistence.FindCommandByWord(temp.Word)
+	cmd = c.persistence.FindCommandByWord(temp.Regex)
 	if cmd.Id == 0 {
-		cmd = &model.Command{Word: temp.Word, Response: temp.Response, Prefix: temp.Prefix}
+		cmd = &model.Command{Regex: temp.Regex, Response: temp.Response, Prefix: temp.Prefix}
 		c.persistence.CreateCommand(cmd)
 	}
 	created(w)

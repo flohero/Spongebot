@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/flohero/Spongebot/database"
 	"github.com/flohero/Spongebot/database/model"
 	"net/http"
 	"os"
@@ -42,7 +43,7 @@ func (c *Controller) JwtAuthentication(next http.Handler) http.Handler {
 		tk := &model.Token{}
 
 		token, err := jwt.ParseWithClaims(tokenPart, tk, func(token *jwt.Token) (interface{}, error) {
-			return []byte(os.Getenv("token_password")), nil
+			return []byte(os.Getenv(database.JWT_PASSWORD)), nil
 		})
 
 		if err != nil { //Malformed token, returns with http code 403 as usual

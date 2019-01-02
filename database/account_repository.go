@@ -8,6 +8,8 @@ import (
 	"os"
 )
 
+const JWT_PASSWORD string = "JWT_PASSWORD"
+
 func (p *Persistence) IsValid(acc *model.Account) (bool, error) {
 	/*emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 	if !emailRegex.MatchString(acc.Email) {
@@ -30,8 +32,8 @@ func (p *Persistence) CreateAccount(acc *model.Account) (error, *model.Account) 
 		return errors.New("Failed to create account"), nil
 	}
 	tk := &model.Token{UserId: acc.Id}
-	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
-	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tk)
+	tokenString, _ := token.SignedString([]byte(os.Getenv(JWT_PASSWORD)))
 	acc.Token = tokenString
 
 	acc.Password = "" //delete password
@@ -54,8 +56,8 @@ func (p *Persistence) Login(username, password string) (error, *model.Account) {
 
 	//Create JWT token
 	tk := &model.Token{UserId: account.Id}
-	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
-	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tk)
+	tokenString, _ := token.SignedString([]byte(os.Getenv(JWT_PASSWORD)))
 	account.Token = tokenString //Store the token in the response
 
 	return nil, account

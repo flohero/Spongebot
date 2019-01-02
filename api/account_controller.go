@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/flohero/Spongebot/database/model"
 	"net/http"
 )
@@ -25,8 +26,13 @@ func (c *Controller) CreateAccount(w http.ResponseWriter, r *http.Request) {
 func (c *Controller) Authenticate(w http.ResponseWriter, r *http.Request) {
 	account := &model.Account{}
 	err := json.NewDecoder(r.Body).Decode(account) //decode the request body into struct and failed if any error occur
-	if err != nil || account.Username == "" || account.Password == "" {
+	if err != nil {
 		badRequest(w, err)
+		return
+	}
+
+	if account.Username == "" || account.Password == "" {
+		badRequest(w, errors.New("No username or password supplied"))
 		return
 	}
 

@@ -6,7 +6,6 @@ import (
 	"github.com/flohero/Spongebot/database"
 	"github.com/flohero/Spongebot/database/model"
 	"github.com/starlight-go/starlight"
-	"strings"
 )
 
 const prefix string = "_"
@@ -37,7 +36,7 @@ func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate
 	if msg.Author.ID == session.State.User.ID {
 		return
 	}
-	cmdStr := strings.Split(msg.Content, " ")[0]
+	/*cmdStr := strings.Split(msg.Content, " ")[0]
 	if len([]rune(cmdStr)) <= 0 {
 		return
 	}
@@ -45,18 +44,22 @@ func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate
 	command := cmdStr
 	if prf {
 		command = cmdStr[len(cmdStr)-(len(cmdStr)-1):]
-	}
-	if cmd := b.persistence.FindCommandByWord(command); cmd.Id != 0 && cmd.Prefix == prf {
-		if cmd.Script {
-			res, err := execScript(msg.Content, cmd)
-			if err != nil {
-				fmt.Printf("\nError running script: %s", err)
-				return
+	}*/
+	if cmds, err := b.persistence.FindCommandByRegex(msg.Content); len(cmds) != 0 && err == nil {
+		for _, cmd := range cmds {
+			if cmd.Script {
+				res, err := execScript(msg.Content, cmd)
+				if err != nil {
+					fmt.Printf("\nError running script: %s", err)
+					return
+				}
+				b.respondToMessage(session, msg, res)
+			} else {
+				b.respondToMessage(session, msg, cmd.Response)
 			}
-			b.respondToMessage(session, msg, res)
-		} else {
-			b.respondToMessage(session, msg, cmd.Response)
 		}
+	} else if err != nil {
+		fmt.Println(err)
 	}
 }
 

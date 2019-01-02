@@ -36,8 +36,14 @@ func writeError(w http.ResponseWriter, err error, code int) {
 
 func corsAndContentTypeHeader(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Content-Type", "application/json")
 		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		if r.Method == "OPTIONS" {
+			w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+			w.WriteHeader(200)
+			return
+		}
+		w.Header().Add("Content-Type", "application/json")
 		next.ServeHTTP(w, r)
 	})
 }

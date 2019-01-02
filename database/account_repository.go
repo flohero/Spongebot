@@ -11,10 +11,6 @@ import (
 const JWT_PASSWORD string = "JWT_PASSWORD"
 
 func (p *Persistence) IsValid(acc *model.Account) (bool, error) {
-	/*emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	if !emailRegex.MatchString(acc.Email) {
-		return false, errors.New("Not a valid email")
-	}*/
 	if p.FindByUsername(acc.Username).Username != "" {
 		return false, errors.New("")
 	}
@@ -66,5 +62,6 @@ func (p *Persistence) Login(username, password string) (error, *model.Account) {
 func (p *Persistence) FindByUsername(username string) (acc *model.Account) {
 	acc = &model.Account{}
 	p.db.Where(&model.Account{Username: username}).First(acc)
+	acc.Token = ""
 	return acc
 }

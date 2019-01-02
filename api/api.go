@@ -29,6 +29,27 @@ func Serve(persistence *database.Persistence) {
 
 	r.HandleFunc("/api/user/new", c.CreateAccount).Methods("POST")
 	r.HandleFunc("/api/user/login", c.Authenticate).Methods("POST")
+
+	// CORS
+
+	r.HandleFunc("/api/commands", c.options).Methods("OPTIONS")
+	r.HandleFunc("/api/commands", c.options).Methods("OPTIONS")
+	r.HandleFunc("/api/commands/{id}", c.options).Methods("OPTIONS")
+
+	r.HandleFunc("/api/configs", c.options).Methods("OPTIONS")
+	r.HandleFunc("/api/configs", c.options).Methods("OPTIONS")
+	r.HandleFunc("/api/configs/{id}", c.options).Methods("OPTIONS")
+
+	r.HandleFunc("/api/user/new", c.options).Methods("OPTIONS")
+	r.HandleFunc("/api/user/login", c.options).Methods("OPTIONS")
+
 	loggedRouter := handlers.LoggingHandler(os.Stdout, r)
 	panic(http.ListenAndServe(":8080", loggedRouter))
+
+}
+
+func (c *Controller) options(w http.ResponseWriter, r *http.Request) {
+	w.Header().Del("Content-Type")
+	println(w.Header().Get("Content-Type"))
+	w.WriteHeader(200)
 }

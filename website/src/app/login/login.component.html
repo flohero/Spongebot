@@ -1,0 +1,14 @@
+<div>
+  <form (submit)="onSubmit()" class="flex flex-column center mw6 mt7 ba b--black-20 pb3 br2">
+    <h1 class="tc">Login to Spongebot</h1>
+    <div class="w-100 center mw5 flex-column ma3">
+      <input class="w-100 f6 f5-l input-reset fl black-80 pa3 lh-solid br2-ns br ba b--black" type="text" [(ngModel)]="user.username" name="username" placeholder="Username">
+    </div>
+    <div class="w-100 center mw5 flex-column ma3">
+      <input class="w-100 f6 f5-l input-reset fl black-80 pa3 lh-solid br2-ns br ba b--black" type="password" [(ngModel)]="user.password" name="password" placeholder="Password">
+    </div>
+    <div class="w-100 center mw5 flex-column ma3">
+      <input class="w-100 f6 f5-l input-reset fl black-80 pa3 lh-solid br2-ns br ba b--black pointer" type="submit" (submit)="onSubmit()">
+    </div>
+  </form>
+</div>

@@ -8,7 +8,10 @@
       <input class="w-100 f6 f5-l input-reset fl black-80 pa3 lh-solid br2-ns br ba b--black" type="password" [(ngModel)]="user.password" name="password" placeholder="Password">
     </div>
     <div class="w-100 center mw5 flex-column ma3">
-      <input class="w-100 f6 f5-l input-reset fl black-80 pa3 lh-solid br2-ns br ba b--black pointer" type="submit" (submit)="onSubmit()">
+      <input class="w-100 f6 f5-l fl black-80 pa3 lh-solid br2-ns br ba b--black bg-white" type="submit" (submit)="onSubmit()" [disabled]="error" content="Submit">
+    </div>
+    <div class="w-100 center mw5 flex-column ma3" [hidden]="error&&errorMsg!=''">
+      <span class="red">{{errorMsg}}</span>
     </div>
   </form>
 </div>

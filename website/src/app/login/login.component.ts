@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthService} from '../services/auth.service';
+import {AuthService} from '../_services/auth.service';
 import {User} from '../model/user.model';
 
 @Component({
@@ -9,6 +9,8 @@ import {User} from '../model/user.model';
 })
 export class LoginComponent implements OnInit {
   user = new User();
+  error = false;
+  errorMsg = '';
   constructor(private authService: AuthService) { }
 
   ngOnInit() {
@@ -17,11 +19,14 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.user).subscribe(
       data => {
         sessionStorage.setItem('account', data.token);
-        console.log('logged in!');
-        console.log(data);
       },
       error => {
         console.log(error);
+        if (error.error.message) {
+          this.errorMsg = error.error.message;
+        } else {
+          this.errorMsg = error.error;
+        }
       }
     );
   }

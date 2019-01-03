@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/flohero/Spongebot/database/model"
 	"net/http"
@@ -19,9 +18,8 @@ func (c *Controller) GetAllCommands(writer http.ResponseWriter, request *http.Re
 }
 
 func (c *Controller) GetCommandById(w http.ResponseWriter, r *http.Request) {
-	id, err := getIdFromPath(w, r)
-	if err != nil {
-		badRequest(w, err)
+	check, id := parseId(w, r)
+	if !check {
 		return
 	}
 	cmd := c.persistence.FindCommandById(id)
@@ -33,18 +31,48 @@ func (c *Controller) GetCommandById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Controller) CreateCommand(w http.ResponseWriter, r *http.Request) {
-	var temp model.Command
-	err := json.NewDecoder(r.Body).Decode(&temp)
-	if err != nil || temp.Regex == "" || temp.Response == "" {
-		badRequest(w, errors.New("Malformed body"))
+	check, temp := parseCommand(w, r)
+	if !check {
 		return
 	}
 	var cmd *model.Command
 	cmd = c.persistence.FindCommandByWord(temp.Regex)
 	if cmd.Id == 0 {
-		cmd = &model.Command{Regex: temp.Regex, Response: temp.Response, Prefix: temp.Prefix}
+		cmd = &model.Command{Regex: temp.Regex, Response: temp.Response, Script: temp.Script, Description: temp.Description}
 		c.persistence.CreateCommand(cmd)
 	}
 	created(w)
 	writeJson(w, &cmd)
+}
+
+func (c *Controller) UpdateCommandById(w http.ResponseWriter, r *http.Request) {
+	check, temp := parseCommand(w, r)
+	if !check {
+		return
+	}
+	check, id := parseId(w, r)
+	if !check {
+		return
+	}
+	temp.Id = id
+	c.persistence.UpdateCommand(temp)
+	w.WriteHeader(204)
+}
+
+func (c *Controller) DeleteCommandById(w http.ResponseWriter, r *http.Request) {
+	check, id := parseId(w, r)
+	if !check {
+		return
+	}
+	c.persistence.DeleteCommandById(id)
+	w.WriteHeader(204)
+}
+
+func parseId(w http.ResponseWriter, r *http.Request) (bool, int) {
+	id, err := getIdFromPath(w, r)
+	if err != nil {
+		malformedId(w)
+		return false, -1
+	}
+	return true, id
 }

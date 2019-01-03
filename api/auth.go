@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/flohero/Spongebot/database"
 	"github.com/flohero/Spongebot/database/model"
@@ -47,7 +48,7 @@ func (c *Controller) JwtAuthentication(next http.Handler) http.Handler {
 		})
 
 		if err != nil { //Malformed token, returns with http code 403 as usual
-			forbidden(w, errors.New("Malformed token"))
+			forbidden(w, errors.New(fmt.Sprint("Token is malformed or expired")))
 			return
 		}
 

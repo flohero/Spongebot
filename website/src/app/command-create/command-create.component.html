@@ -1,0 +1,40 @@
+<form class="pure-form pure-form-aligned" *ngIf="command" (submit)="onSubmit()">
+  <fieldset>
+    <legend>Create a command</legend>
+    <div class="pure-control-group">
+      <label for="id">ID</label>
+      <input id="id" type="text" placeholder="ID" disabled value="{{command.id}}">
+    </div>
+
+    <div class="pure-control-group">
+      <label for="regex">Regular Expression</label>
+      <input id="regex" name="regex" type="text" placeholder="Regex" [(ngModel)]="command.regex" required>
+      <span class="pure-form-message-inline">This is a required field.</span>
+    </div>
+
+    <div class="pure-control-group">
+      <label for="response">Response</label>
+      <textarea id="response" placeholder="Response" name="response" [(ngModel)]="command.response" required></textarea>
+      <span class="pure-form-message-inline">This is a required field.</span>
+    </div>
+
+    <div class="pure-control-group">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" placeholder="Enter a description here..." [(ngModel)]="command.description" required></textarea>
+      <span class="pure-form-message-inline">This is a required field.</span>
+    </div>
+
+    <div class="pure-controls">
+      <label for="script" class="pure-checkbox">
+        <input id="script" type="checkbox" [(ngModel)]="command.script" name="script"> This is a script.
+      </label>
+    </div>
+    <div class="pure-control-group">
+      <input type="submit" class="pure-button pure-button-primary" value="Submit" (submit)="onSubmit()">
+    </div>
+
+    <span class="red" *ngIf="errorMsg!==''">
+      {{errorMsg}}
+    </span>
+  </fieldset>
+</form>

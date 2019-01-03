@@ -1,1 +1,34 @@
 /* You can add global styles to this file, and also import other style files */
+.bg-new-blue {
+  background-color: rgb(7, 71, 166);
+}
+
+.new-white {
+ color: rgb(222, 235, 255)
+}
+
+.w-16 {
+  width: 16%
+}
+
+.w-84 {
+  width: 84%
+}
+
+.h-4 {
+  height: 4%
+}
+
+.new-blue {
+  color: rgb(7, 71, 166);
+}
+
+html, body {margin: 0; height: 100%; overflow: hidden}
+
+.fixed-button {
+  position: fixed;
+  bottom: 5%;
+  right: 3%;
+  height: 40px;
+  width: 40px;
+}

@@ -6,5 +6,4 @@ type Command struct {
 	Description string `gorm:""json:"description"`
 	Response    string `gorm:"not null"json:"response"`
 	Script      bool   `gorm:"not null"json:"script"`
-	Prefix      bool   `gorm:""json:"prefix"`
 }

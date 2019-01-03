@@ -6,6 +6,7 @@ import (
 	"github.com/flohero/Spongebot/database/model"
 	"golang.org/x/crypto/bcrypt"
 	"os"
+	"time"
 )
 
 const JWT_PASSWORD string = "JWT_PASSWORD"
@@ -27,11 +28,13 @@ func (p *Persistence) CreateAccount(acc *model.Account) (error, *model.Account) 
 	if acc.Id <= 0 {
 		return errors.New("Failed to create account"), nil
 	}
-	tk := &model.Token{UserId: acc.Id}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tk)
-	tokenString, _ := token.SignedString([]byte(os.Getenv(JWT_PASSWORD)))
-	acc.Token = tokenString
+	/*
+		tk := &model.Token{UserId: acc.Id}
 
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, tk)
+		tokenString, _ := token.SignedString([]byte(os.Getenv(JWT_PASSWORD)))
+		acc.Token = tokenString
+	*/
 	acc.Password = "" //delete password
 	return nil, acc
 }
@@ -51,7 +54,13 @@ func (p *Persistence) Login(username, password string) (error, *model.Account) {
 	account.Password = ""
 
 	//Create JWT token
-	tk := &model.Token{UserId: account.Id}
+	tk := &model.Token{
+		UserId: account.Id,
+		Claims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour * 4).Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tk)
 	tokenString, _ := token.SignedString([]byte(os.Getenv(JWT_PASSWORD)))
 	account.Token = tokenString //Store the token in the response

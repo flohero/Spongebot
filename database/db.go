@@ -38,7 +38,7 @@ func connectToSqlite() (*gorm.DB, error) {
 }
 
 func (p *Persistence) createDB() {
-	p.db.DropTable(&model.Command{})
+	//p.db.DropTable(&model.Command{})
 	p.db.DropTable(&model.Account{})
 	p.db.CreateTable(&model.Command{})
 	p.db.CreateTable(&model.Config{})
@@ -46,9 +46,9 @@ func (p *Persistence) createDB() {
 }
 
 func (p *Persistence) initData() {
-	p.CreateCommand(&model.Command{Regex: "^ping", Description: "Will response with pong.", Response: "pong", Script: false, Prefix: false})
-	p.CreateCommand(&model.Command{Regex: "peng", Description: "This will make your message uppercase.", Response: "s.Result = s.Message.upper()", Script: true, Prefix: false})
+	p.CreateCommand(&model.Command{Regex: "^ping", Description: "Will response with pong.", Response: "pong", Script: false})
+	p.CreateCommand(&model.Command{Regex: "peng", Description: "This will make your message uppercase.", Response: "s.Result = s.Message.upper()", Script: true})
 	s := "s.Result = \"|\".join(s.Message.split(\" \"))"
-	p.CreateCommand(&model.Command{Regex: "*", Description: "This will replace all whitespaces with a pipe.", Response: s, Script: true, Prefix: false})
+	p.CreateCommand(&model.Command{Regex: ".+\\s", Description: "This will replace all whitespaces with a pipe.", Response: s, Script: true})
 	p.CreateAccount(&model.Account{Username: "sponge", Password: "bot"})
 }

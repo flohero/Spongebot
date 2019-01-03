@@ -4,7 +4,11 @@ import "github.com/dgrijalva/jwt-go"
 
 type Token struct {
 	UserId int
-	jwt.StandardClaims
+	Claims jwt.StandardClaims
+}
+
+func (t *Token) Valid() error {
+	return t.Claims.Valid()
 }
 
 type Account struct {

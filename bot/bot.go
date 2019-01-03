@@ -1,17 +1,20 @@
 package bot
 
 import (
+	"errors"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/flohero/Spongebot/database"
 	"github.com/flohero/Spongebot/database/model"
 	"github.com/starlight-go/starlight"
+	"time"
 )
 
 const prefix string = "_"
 
 type Bot struct {
 	persistence *database.Persistence
+	config      *model.Config
 }
 
 type scriptResult struct {
@@ -28,7 +31,7 @@ func Listen(config *model.Config, persistence *database.Persistence) {
 	if err = discord.Open(); err != nil {
 		panic(err)
 	}
-	bot := Bot{persistence: persistence}
+	bot := Bot{persistence: persistence, config: config}
 	discord.AddHandler(bot.onMessage)
 }
 
@@ -36,21 +39,13 @@ func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate
 	if msg.Author.ID == session.State.User.ID {
 		return
 	}
-	/*cmdStr := strings.Split(msg.Content, " ")[0]
-	if len([]rune(cmdStr)) <= 0 {
-		return
-	}
-	prf := string([]rune(cmdStr)[0]) == prefix
-	command := cmdStr
-	if prf {
-		command = cmdStr[len(cmdStr)-(len(cmdStr)-1):]
-	}*/
 	if cmds, err := b.persistence.FindCommandByRegex(msg.Content); len(cmds) != 0 && err == nil {
 		for _, cmd := range cmds {
 			if cmd.Script {
 				res, err := execScript(msg.Content, cmd)
 				if err != nil {
 					fmt.Printf("\nError running script: %s", err)
+					b.sendError(session, msg, errors.New(fmt.Sprintf("Error running script [id: %v]: %s", cmd.Id, err.Error())))
 					return
 				}
 				b.respondToMessage(session, msg, res)
@@ -59,15 +54,45 @@ func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate
 			}
 		}
 	} else if err != nil {
-		fmt.Println(err)
+		b.sendError(session, msg, err)
+	}
+	if msg.Content == fmt.Sprintf("%shelp", prefix) {
+		b.sendHelp(session, msg)
 	}
 }
 
-func (b *Bot) respondToMessage(session *discordgo.Session, msg *discordgo.MessageCreate, content string) {
-	_, err := session.ChannelMessageSend(msg.ChannelID, content)
+func (b *Bot) sendHelp(session *discordgo.Session, msg *discordgo.MessageCreate) {
+	fields := make([]*discordgo.MessageEmbedField, 0)
+	cmds, err := b.persistence.FindAllCommands()
 	if err != nil {
-		fmt.Printf("Error sending message: %s", err)
+		b.sendError(session, msg, errors.New("error finding commands"))
+		return
 	}
+	for _, v := range cmds {
+		fields = append(fields, &discordgo.MessageEmbedField{
+			Name:  v.Regex,
+			Value: v.Description,
+		})
+	}
+	b.sendEmbed(session, msg,
+		buildEmbed(0x00ff00, "HELP",
+			"These commands are available. Keep in mind that all messages are regular expressions.",
+			fields, nil, nil),
+	)
+
+}
+
+func (b *Bot) respondToMessage(session *discordgo.Session, msg *discordgo.MessageCreate, content string) {
+	sendingMessageError(session.ChannelMessageSend(msg.ChannelID, content))
+}
+
+func (b *Bot) sendEmbed(session *discordgo.Session, msg *discordgo.MessageCreate, embed *discordgo.MessageEmbed) {
+	sendingMessageError(session.ChannelMessageSendEmbed(msg.ChannelID, embed))
+}
+
+func (b *Bot) sendError(session *discordgo.Session, msg *discordgo.MessageCreate, err error) {
+	embed := buildEmbed(0xFF0000, "Error", err.Error(), nil, nil, nil)
+	b.sendEmbed(session, msg, embed)
 }
 
 func execScript(message string, cmd *model.Command) (string, error) {
@@ -82,4 +107,25 @@ func execScript(message string, cmd *model.Command) (string, error) {
 		return "", err
 	}
 	return s.Result, nil
+}
+
+func buildEmbed(color int, title, description string,
+	fields []*discordgo.MessageEmbedField, image *discordgo.MessageEmbedImage,
+	thumbnail *discordgo.MessageEmbedThumbnail) *discordgo.MessageEmbed {
+	return &discordgo.MessageEmbed{
+		Author:      &discordgo.MessageEmbedAuthor{},
+		Color:       color, // 0x00ff00
+		Description: description,
+		Fields:      fields,
+		Image:       image,
+		Thumbnail:   thumbnail,
+		Timestamp:   time.Now().Format(time.RFC3339), // Discord wants ISO8601; RFC3339 is an extension of ISO8601 and should be completely compatible.
+		Title:       title,
+	}
+}
+
+func sendingMessageError(msg *discordgo.Message, err error) {
+	if err != nil {
+		fmt.Printf("Error sending message: %s\n%s", msg.Content, err)
+	}
 }

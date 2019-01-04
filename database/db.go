@@ -50,5 +50,5 @@ func (p *Persistence) initData() {
 	p.CreateCommand(&model.Command{Regex: "peng", Description: "This will make your message uppercase.", Response: "s.Result = s.Message.upper()", Script: true})
 	s := "s.Result = \"|\".join(s.Message.split(\" \"))"
 	p.CreateCommand(&model.Command{Regex: ".+\\s", Description: "This will replace all whitespaces with a pipe.", Response: s, Script: true})
-	p.CreateAccount(&model.Account{Username: "sponge", Password: "bot"})
+	p.CreateAccount(&model.Account{Username: "sponge", Password: "bot", Admin: true})
 }

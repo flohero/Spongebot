@@ -1,10 +1,13 @@
 package database
 
 import (
+	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/flohero/Spongebot/database/model"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"os"
 	"time"
 )
@@ -13,7 +16,7 @@ const JWT_PASSWORD string = "JWT_PASSWORD"
 
 func (p *Persistence) IsValid(acc *model.Account) (bool, error) {
 	if p.FindByUsername(acc.Username).Username != "" {
-		return false, errors.New("")
+		return false, errors.New(fmt.Sprint("User not found!"))
 	}
 	return true, nil
 }
@@ -28,13 +31,6 @@ func (p *Persistence) CreateAccount(acc *model.Account) (error, *model.Account) 
 	if acc.Id <= 0 {
 		return errors.New("Failed to create account"), nil
 	}
-	/*
-		tk := &model.Token{UserId: acc.Id}
-
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, tk)
-		tokenString, _ := token.SignedString([]byte(os.Getenv(JWT_PASSWORD)))
-		acc.Token = tokenString
-	*/
 	acc.Password = "" //delete password
 	return nil, acc
 }
@@ -56,6 +52,7 @@ func (p *Persistence) Login(username, password string) (error, *model.Account) {
 	//Create JWT token
 	tk := &model.Token{
 		UserId: account.Id,
+		Admin:  account.Admin,
 		Claims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 4).Unix(),
 			IssuedAt:  time.Now().Unix(),
@@ -73,4 +70,29 @@ func (p *Persistence) FindByUsername(username string) (acc *model.Account) {
 	p.db.Where(&model.Account{Username: username}).First(acc)
 	acc.Token = ""
 	return acc
+}
+
+func (p *Persistence) FindAllAccounts() ([]*model.Account, error) {
+	rows, err := p.db.Table("accounts").Select("id, username, admin").Rows()
+	if err != nil {
+		return nil, errors.New("Error while getting all accounts")
+	}
+	return assignRowsToAccount(rows)
+}
+
+func assignRowsToAccount(rows *sql.Rows) ([]*model.Account, error) {
+	accounts := make([]*model.Account, 0)
+	for rows.Next() {
+		acc := &model.Account{}
+		if err := rows.Scan(&acc.Id, &acc.Username, &acc.Admin); err != nil {
+			log.Fatal(err.Error())
+			return nil, errors.New("Error with DB")
+		}
+		accounts = append(accounts, acc)
+	}
+	return accounts, nil
+}
+
+func (p *Persistence) DeleteAccountById(id int) {
+	p.db.Where(model.Account{Id: id}).Delete(model.Account{})
 }

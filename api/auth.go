@@ -16,8 +16,9 @@ func (c *Controller) JwtAuthentication(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		notAuth := []string{"/api/user/login"} //List of endpoints that doesn't require auth
-		requestPath := r.URL.Path              //current request path
+		notAuth := []string{"/api/user/login"}                       //List of endpoints that doesn't require auth
+		specialPrivileges := []string{"/api/user/new", "/api/users"} //List of endpoint that need special admin privileges
+		requestPath := r.URL.Path                                    //current request path
 
 		//check if request does not need authentication, serve the request if it doesn't need it
 		for _, value := range notAuth {
@@ -48,13 +49,22 @@ func (c *Controller) JwtAuthentication(next http.Handler) http.Handler {
 		})
 
 		if err != nil { //Malformed token, returns with http code 403 as usual
-			forbidden(w, errors.New(fmt.Sprint("Token is malformed or expired")))
+			forbidden(w, errors.New(fmt.Sprint("Token is expired or signature is invalid.")))
 			return
 		}
 
 		if !token.Valid { //Token is invalid, maybe not signed on this server
 			forbidden(w, errors.New("Token is not valid"))
 			return
+		}
+
+		for _, v := range specialPrivileges {
+			if strings.Contains(requestPath, v) {
+				if !tk.Admin {
+					forbidden(w, errors.New(fmt.Sprint("You don't have admin privileges!")))
+					return
+				}
+			}
 		}
 
 		//Everything went well, proceed with the request and set the caller to the user retrieved from the parsed token

@@ -43,3 +43,21 @@ func (c *Controller) Authenticate(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJson(w, account)
 }
+
+func (c *Controller) GetAllAccounts(w http.ResponseWriter, r *http.Request) {
+	accs, err := c.persistence.FindAllAccounts()
+	if err != nil {
+		internalError(w, err)
+		return
+	}
+	writeJson(w, accs)
+}
+
+func (c *Controller) DeleteAccountById(w http.ResponseWriter, r *http.Request) {
+	check, id := parseId(w, r)
+	if !check {
+		return
+	}
+	c.persistence.DeleteAccountById(id)
+	w.WriteHeader(204)
+}

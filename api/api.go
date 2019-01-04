@@ -30,6 +30,10 @@ func Serve(persistence *database.Persistence) {
 	r.HandleFunc("/api/configs", c.CreateConfig).Methods("POST", "OPTIONS")
 	r.HandleFunc("/api/configs/{id}", c.GetConfigById).Methods("GET", "OPTIONS")
 
+	// Admin only
+	r.HandleFunc("/api/users", c.GetAllAccounts).Methods("GET", "OPTIONS")
+	r.HandleFunc("/api/users/{id}/delete", c.DeleteAccountById).Methods("DELETE", "OPTIONS")
+
 	r.HandleFunc("/api/user/new", c.CreateAccount).Methods("POST", "OPTIONS")
 	r.HandleFunc("/api/user/login", c.Authenticate).Methods("POST", "OPTIONS")
 

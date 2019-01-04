@@ -9,7 +9,7 @@ export class RouterGuard implements CanActivate {
   constructor(private router: Router, private auth: AuthService) {}
 
   canActivate(): boolean {
-    if (!this.auth.isValid()) {
+    if (!this.auth.tokenIsValid()) {
       this.router.navigateByUrl('/login');
       return false;
     }

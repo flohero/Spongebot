@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Command, isValid} from '../model/command.model';
+import {Command, isValid} from '../_model/command.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '../_services/auth.service';
 import {CommandService} from '../_services/command.service';
@@ -21,7 +21,7 @@ export class CommandCreateComponent implements OnInit {
   }
   onSubmit() {
     if (!isValid(this.command)) {
-      this.errorMsg = 'Regular expressions like "*", "^*" or "+" are not allowed.';
+      this.errorMsg = 'Regular expressions like "*", "^*" or "+" are not allowed. All fields are required!';
       return;
     } else {
       this.errorMsg = '';

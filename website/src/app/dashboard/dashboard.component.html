@@ -1,7 +1,19 @@
 <div class="flex flex-wrap min-h-100">
   <app-sidebar class="w-16 min-h-100 shadow-1 new-white bg-new-blue"></app-sidebar>
-  <div class="w-84 min-h-100 overflow-y-scroll pl3">
-    <router-outlet></router-outlet>
-
+  <div class="w-84 flex flex-column">
+    <div class="w-100 overflow-y-auto h-90 pl3 pb3">
+      <router-outlet></router-outlet>
+    </div>
+    <footer class="w-100 h-4 bt tc fixed-footer flex  new-blue b--black-20">
+      <div class="w-30 pt2">
+        <a href="https://github.com/flohero/Spongebot" class="link new-blue dim">Github Repo</a>
+      </div>
+      <div class="w-30 pt2">
+        Author: Florian Weingartshofer
+      </div>
+      <div class="w-30 pt2">
+        MIT LICENSE
+      </div>
+    </footer>
   </div>
 </div>

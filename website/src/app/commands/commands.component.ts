@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {CommandService} from '../_services/command.service';
-import {Command} from '../model/command.model';
+import {Command} from '../_model/command.model';
 import {AuthService} from '../_services/auth.service';
 import {Router} from '@angular/router';
 import {Title} from '@angular/platform-browser';

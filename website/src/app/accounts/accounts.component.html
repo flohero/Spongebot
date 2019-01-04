@@ -1,0 +1,33 @@
+<div class="pt5 flex-wrap">
+  <h2 class="tc w-100">All Commands</h2>
+  <table class="f6 w-100 mw8 center" cellspacing="0">
+    <thead>
+    <tr>
+      <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">ID</th>
+      <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Username</th>
+      <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Admin</th>
+      <th class="fw6 bb b--black-20 tl pb3 pr3 bg-white">Delete</th>
+    </tr>
+    </thead>
+    <tbody class="lh-copy">
+    <tr *ngFor="let acc of accounts">
+      <td class="pv3 pr3 bb b--black-20">{{acc.id}}</td>
+      <td class="pv3 pr3 bb b--black-20">
+        <div  class="pa1 bg-light-gray br2">
+          <code>{{acc.username}}</code>
+        </div>
+      </td>
+      <td class="pv3 pr3 bb b--black-20"><input type="checkbox" [(ngModel)]="acc.admin" disabled></td>
+      <td class="pv3 pr3 bb b--black-20"><i class="material-icons pointer gray hover-red" (click)="onDelete(acc.id)">
+        delete
+      </i></td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="fixed-button bg-new-blue br-100 pa2 color white shadow-5 pointer" routerLink="/dashboard/commands/create">
+    <i class="material-icons">
+      add
+    </i>
+  </div>
+</div>
+

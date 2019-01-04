@@ -1,29 +1,55 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --new-blue: rgb(7, 71, 166);
+  --new-white: rgb(222, 235, 255);
+}
+
 .bg-new-blue {
-  background-color: rgb(7, 71, 166);
+  background-color: var(--new-blue);
+}
+
+.bg-new-white {
+  background-color: var(--new-white);
+}
+
+.bg-washed-white {
+  background-color: rgb(255,250,250);
 }
 
 .new-white {
- color: rgb(222, 235, 255)
+ color: var(--new-white);
 }
 
 .w-16 {
-  width: 16%
+  width: 16%;
 }
 
 .w-84 {
-  width: 84%
+  width: 84%;
 }
 
 .h-4 {
-  height: 4%
+  height: 4%;
 }
+
+.h-90 { height: 90%; }
+
+.h-99 { height: 99%; }
+
+.h-95 { height: 95%; }
+
+.h-80 { height: 80%; }
+
 
 .new-blue {
-  color: rgb(7, 71, 166);
+  color: var(--new-blue);
 }
 
-html, body {margin: 0; height: 100%; overflow: hidden}
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
 
 .fixed-button {
   position: fixed;
@@ -31,4 +57,13 @@ html, body {margin: 0; height: 100%; overflow: hidden}
   right: 3%;
   height: 40px;
   width: 40px;
+}
+
+.pt04 { padding-top: .4rem }
+
+.pt062 { padding-top: .62rem }
+
+.fixed-footer {
+  position: fixed;
+  bottom: 0px;
 }

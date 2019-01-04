@@ -10,6 +10,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { CommandDetailComponent } from './command-detail/command-detail.component';
 import { CommandCreateComponent } from './command-create/command-create.component';
+import { AccountsComponent } from './accounts/accounts.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { CommandCreateComponent } from './command-create/command-create.componen
     DashboardComponent,
     SidebarComponent,
     CommandDetailComponent,
-    CommandCreateComponent
+    CommandCreateComponent,
+    AccountsComponent
   ],
   imports: [
     BrowserModule,

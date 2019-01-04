@@ -7,7 +7,8 @@ export class Command {
 }
 
 export function isValid(cmd: Command): boolean {
-  if (cmd.regex.startsWith('*') || cmd.regex.startsWith('^*') || cmd.regex.startsWith('+')) {
+  if (cmd.regex === '' || cmd.response === '' || cmd.description === ''
+    || cmd.regex.startsWith('*') || cmd.regex.startsWith('^*') || cmd.regex.startsWith('+')) {
     return false;
   }
   return true;

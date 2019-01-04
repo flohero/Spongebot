@@ -18,8 +18,10 @@ type Bot struct {
 }
 
 type scriptResult struct {
-	Message string
-	Result  string
+	Message  string
+	Result   string
+	GuildId  string
+	AuthorId string
 }
 
 func Listen(config *model.Config, persistence *database.Persistence) {
@@ -39,14 +41,18 @@ func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate
 	if msg.Author.ID == session.State.User.ID {
 		return
 	}
+
 	if cmds, err := b.persistence.FindCommandByRegex(msg.Content); len(cmds) != 0 && err == nil {
 		for _, cmd := range cmds {
 			if cmd.Script {
-				res, err := execScript(msg.Content, cmd)
+				res, err := b.execScript(msg.Content, cmd, session, msg)
 				if err != nil {
 					fmt.Printf("\nError running script: %s", err)
 					b.sendError(session, msg, errors.New(fmt.Sprintf("Error running script [id: %v]: %s", cmd.Id, err.Error())))
 					return
+				}
+				if res == "" {
+					println("No result")
 				}
 				b.respondToMessage(session, msg, res)
 			} else {
@@ -95,12 +101,15 @@ func (b *Bot) sendError(session *discordgo.Session, msg *discordgo.MessageCreate
 	b.sendEmbed(session, msg, embed)
 }
 
-func execScript(message string, cmd *model.Command) (string, error) {
+func (b *Bot) execScript(message string, cmd *model.Command, session *discordgo.Session, msg *discordgo.MessageCreate) (string, error) {
 	s := &scriptResult{
-		Message: message,
+		Message:  message,
+		GuildId:  msg.GuildID,
+		AuthorId: msg.Author.ID,
 	}
 	globals := map[string]interface{}{
-		"s": s,
+		"s":        s,
+		"kickUser": session.GuildMemberDeleteWithReason,
 	}
 	_, err := starlight.Eval([]byte(cmd.Response), globals, nil)
 	if err != nil {

@@ -10,7 +10,7 @@ Add custom commands to this bot, via a simple REST API.
 ## Scripting
 You can create custom functionality through 
 [starlark](https://docs.bazel.build/versions/master/skylark/language.html), 
-a python dialect and [starleight-go](https://github.com/starlight-go/starlight). 
+a python dialect and [starlight-go](https://github.com/starlight-go/starlight). 
 It's simple to use, the program provides a struct called `s` which contains two fields, 
 a `Message` field which contains the discord message and a `Result` field, 
 in which you should save the final answer. 

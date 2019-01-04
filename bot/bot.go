@@ -82,7 +82,7 @@ func (b *Bot) sendHelp(session *discordgo.Session, msg *discordgo.MessageCreate)
 	}
 	b.sendEmbed(session, msg,
 		buildEmbed(0x00ff00, "HELP",
-			"These commands are available. Keep in mind that all messages are regular expressions.",
+			"These commands are available. Keep in mind that all commands are regular expressions. https://www.regular-expressions.info/",
 			fields, nil, nil),
 	)
 

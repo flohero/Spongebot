@@ -29,32 +29,8 @@ func (c *Controller) JwtAuthentication(next http.Handler) http.Handler {
 			}
 		}
 
-		tokenHeader := r.Header.Get("Authorization") //Grab the token from the header
-		if tokenHeader == "" {                       //Token is missing, returns with error code 403 Unauthorized
-			forbidden(w, errors.New("Missing auth token"))
-			return
-		}
-
-		splitted := strings.Split(tokenHeader, " ") //The token normally comes in format `Bearer {token-body}`, we check if the retrieved token matched this requirement
-		if len(splitted) != 2 {
-			forbidden(w, errors.New("Invalid/Malformed token"))
-			return
-		}
-
-		tokenPart := splitted[1] //Grab the token part, what we are truly interested in
-		tk := &model.Token{}
-
-		token, err := jwt.ParseWithClaims(tokenPart, tk, func(token *jwt.Token) (interface{}, error) {
-			return []byte(os.Getenv(database.JWT_PASSWORD)), nil
-		})
-
-		if err != nil { //Malformed token, returns with http code 403 as usual
-			forbidden(w, errors.New(fmt.Sprint("Token is expired or signature is invalid.")))
-			return
-		}
-
-		if !token.Valid { //Token is invalid, maybe not signed on this server
-			forbidden(w, errors.New("Token is not valid"))
+		tk := c.checkJWT(w, r)
+		if tk == nil {
 			return
 		}
 
@@ -73,4 +49,41 @@ func (c *Controller) JwtAuthentication(next http.Handler) http.Handler {
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r) //proceed in the middleware chain!
 	})
+}
+
+func (c *Controller) checkJWT(w http.ResponseWriter, r *http.Request) *model.Token {
+	tokenHeader := r.Header.Get("Authorization") //Grab the token from the header
+	if tokenHeader == "" {                       //Token is missing, returns with error code 403 Unauthorized
+		forbidden(w, errors.New("Missing auth token"))
+		return nil
+	}
+
+	splitted := strings.Split(tokenHeader, " ") //The token normally comes in format `Bearer {token-body}`, we check if the retrieved token matched this requirement
+	if len(splitted) != 2 {
+		forbidden(w, errors.New("Invalid/Malformed token"))
+		return nil
+	}
+
+	tokenPart := splitted[1] //Grab the token part, what we are truly interested in
+	tk := &model.Token{}
+
+	token, err := jwt.ParseWithClaims(tokenPart, tk, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv(database.JWT_PASSWORD)), nil
+	})
+
+	if err != nil { //Malformed token, returns with http code 403 as usual
+		forbidden(w, errors.New(fmt.Sprint("Token is expired or signature is invalid.")))
+		return nil
+	}
+
+	if c.persistence.FindAccountById(tk.UserId).Id == 0 {
+		forbidden(w, errors.New(fmt.Sprint("User does not exist")))
+		return nil
+	}
+
+	if !token.Valid { //Token is invalid, maybe not signed on this server
+		forbidden(w, errors.New(fmt.Sprint("Token is not valid")))
+		return nil
+	}
+	return tk
 }

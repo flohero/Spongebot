@@ -33,9 +33,11 @@ func Serve(persistence *database.Persistence) {
 	// Admin only
 	r.HandleFunc("/api/users", c.GetAllAccounts).Methods("GET", "OPTIONS")
 	r.HandleFunc("/api/users/{id}/delete", c.DeleteAccountById).Methods("DELETE", "OPTIONS")
+	r.HandleFunc("/api/users/username/{username}", c.GetAccountByUsername).Methods("GET", "OPTIONS")
 
 	r.HandleFunc("/api/user/new", c.CreateAccount).Methods("POST", "OPTIONS")
 	r.HandleFunc("/api/user/login", c.Authenticate).Methods("POST", "OPTIONS")
+	r.HandleFunc("/api/user/update", c.UpdateAccountById).Methods("PUT", "OPTIONS")
 
 	loggedRouter := handlers.LoggingHandler(os.Stdout, r)
 	panic(http.ListenAndServe(":8080", loggedRouter))

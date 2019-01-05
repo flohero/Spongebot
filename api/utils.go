@@ -87,7 +87,7 @@ func commandValid(cmd model.Command, w http.ResponseWriter) bool {
 }
 
 func malformedId(w http.ResponseWriter) {
-	badRequest(w, errors.New(fmt.Sprint("Malformed ID or not provied")))
+	badRequest(w, errors.New(fmt.Sprint("Malformed ID or not provided")))
 }
 
 func parseCommand(w http.ResponseWriter, r *http.Request) (bool, *model.Command) {

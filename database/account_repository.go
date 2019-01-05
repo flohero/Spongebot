@@ -15,7 +15,7 @@ import (
 const JWT_PASSWORD string = "JWT_PASSWORD"
 
 func (p *Persistence) IsValid(acc *model.Account) (bool, error) {
-	if p.FindByUsername(acc.Username).Username != "" {
+	if p.FindAccountByUsername(acc.Username).Username != "" {
 		return false, errors.New(fmt.Sprint("User not found!"))
 	}
 	return true, nil
@@ -38,7 +38,7 @@ func (p *Persistence) CreateAccount(acc *model.Account) (error, *model.Account) 
 func (p *Persistence) Login(username, password string) (error, *model.Account) {
 
 	account := &model.Account{}
-	if account = p.FindByUsername(username); account.Username == "" {
+	if account = p.FindAccountByUsername(username); account.Username == "" {
 		return errors.New("Username not found"), nil
 	}
 
@@ -65,7 +65,7 @@ func (p *Persistence) Login(username, password string) (error, *model.Account) {
 	return nil, account
 }
 
-func (p *Persistence) FindByUsername(username string) (acc *model.Account) {
+func (p *Persistence) FindAccountByUsername(username string) (acc *model.Account) {
 	acc = &model.Account{}
 	p.db.Where(&model.Account{Username: username}).First(acc)
 	acc.Token = ""
@@ -78,6 +78,12 @@ func (p *Persistence) FindAllAccounts() ([]*model.Account, error) {
 		return nil, errors.New("Error while getting all accounts")
 	}
 	return assignRowsToAccount(rows)
+}
+
+func (p *Persistence) FindAccountById(id int) *model.Account {
+	acc := &model.Account{}
+	p.db.Where(model.Account{Id: id}).First(acc)
+	return acc
 }
 
 func assignRowsToAccount(rows *sql.Rows) ([]*model.Account, error) {
@@ -95,4 +101,9 @@ func assignRowsToAccount(rows *sql.Rows) ([]*model.Account, error) {
 
 func (p *Persistence) DeleteAccountById(id int) {
 	p.db.Where(model.Account{Id: id}).Delete(model.Account{})
+}
+
+func (p *Persistence) UpdatePasswordById(id int, password string) {
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	p.db.Model(&model.Account{}).Updates(model.Account{Password: string(hashedPassword)})
 }

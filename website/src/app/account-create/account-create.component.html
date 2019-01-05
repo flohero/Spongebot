@@ -1,0 +1,42 @@
+<form class="pure-form pure-form-aligned" [formGroup]="accountForm" (ngSubmit)="onSubmit()">
+  <fieldset>
+
+    <legend>Create an Account!</legend>
+
+    <div class="pure-control-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Username" name="response" formControlName="username" required>
+      <span class="pure-form-message-inline">This is a required field.</span>
+    </div>
+
+    <div class="pure-control-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Password" name="password" formControlName="password" required>
+      <span class="pure-form-message-inline">This is a required field.</span>
+    </div>
+
+    <div class="pure-control-group">
+      <label for="password-re">Password</label>
+      <input type="password" id="password-re" placeholder="Retype Password" name="passwordRe" formControlName="passwordRe" required>
+      <span class="pure-form-message-inline">This is a required field.</span>
+    </div>
+
+    <div class="pure-controls">
+      <label for="admin" class="pure-checkbox">
+        <input id="admin" type="checkbox" formControlName="admin" name="admin" > This user will be an admin.
+      </label>
+    </div>
+
+    <div class="pure-control-group">
+      <input type="submit" class="pure-button bg-new-blue new-white" value="Submit" (submit)="onSubmit()"
+             [disabled]="!accountForm.valid&&!passwordMatch">
+    </div>
+
+    <span class="red" *ngIf="errorMsg!==''">
+      {{errorMsg}}
+    </span>
+    <span class="red" *ngIf="!passwordMatch">
+      Password does not match
+    </span>
+  </fieldset>
+</form>

@@ -17,6 +17,8 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
   login(user: User): Observable<User> {
+    // Remove token if something is in sessions storage, before login.
+    this.logout();
     const url = `${this.BASE_URL}${this.LOGIN}`;
     return this.http.post<User>(url, JSON.stringify(user), { headers: this.headers });
   }

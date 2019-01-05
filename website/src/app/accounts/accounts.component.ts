@@ -29,7 +29,6 @@ export class AccountsComponent implements OnInit {
   }
 
   onDelete(id: number) {
-    // TODO
     this.accountService.deleteAccountById(id)
       .subscribe(
         (data) => {

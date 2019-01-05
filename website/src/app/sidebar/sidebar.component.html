@@ -9,12 +9,28 @@
         Commands
       </div>
     </div>
-    <div class="pointer w-100 hover-bg-dark-blue br2 h-4 pl2 mw7 flex v-mid" routerLink="./accounts">
+    <div class="pointer w-100 hover-bg-dark-blue br2 h-4 pl2 mw7 flex v-mid" routerLink="./accounts" *ngIf="isAdmin()">
       <div class="material-icons w-20 pt04">
         person
       </div>
       <div class="w-80 pt062">
         Accounts
+      </div>
+    </div>
+    <div class="pointer w-100 hover-bg-dark-blue br2 h-4 pl2 mw7 flex v-mid" routerLink="./accounts/update">
+      <div class="material-icons w-20 pt04">
+        settings
+      </div>
+      <div class="w-80 pt062">
+        Set new password
+      </div>
+    </div>
+    <div class="pointer w-100 hover-bg-dark-blue br2 h-4 pl2 mw7 flex v-mid" routerLink="/login" (click)="logout()">
+      <div class="material-icons w-20 pt04">
+        exit_to_app
+      </div>
+      <div class="w-80 pt062">
+        Logout
       </div>
     </div>
   </div>

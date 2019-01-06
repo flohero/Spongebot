@@ -51,13 +51,13 @@ It's simple to use, the program provides a struct called `s` which contains two 
 ### The `s` struct and builtin function
 With s you can call builtin variables. You call them, like in many programming languages, with `s.`.
 
-| Name         |                                                                                                                            Type |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------: |
-| `s.Message`  |                                                                                            A string, which contains the message |
-| `s.Result`   |                                                                               A empty string, which sould contain your response |
-| `s.GuildId`  |                                                                            A string which contains the ID of the discord server |
-| `s.AuthorId` |                                                                            A string which contains the ID of the message author |
-| `kickUser`   | A function which takes three arguments: a GuildID, AuthorID and a Resons, all three are strings. Its purpose is to kick an user |
+| Name         |                                                                                                                             Type |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------: |
+| `s.Message`  |                                                                                             A string, which contains the message |
+| `s.Result`   |                                                                                A empty string, which sould contain your response |
+| `s.GuildId`  |                                                                             A string which contains the ID of the discord server |
+| `s.AuthorId` |                                                                             A string which contains the ID of the message author |
+| `kickUser`   | A function which takes three arguments: a GuildID, AuthorID and a Reasons, all three are strings. Its purpose is to kick an user |
 
 ### Example
 ```python

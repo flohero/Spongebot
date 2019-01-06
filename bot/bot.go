@@ -43,7 +43,7 @@ func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate
 	}
 
 	if cmds, err := b.persistence.FindCommandByRegex(msg.Content); len(cmds) != 0 && err == nil {
-		fmt.Printf("Got %v match(es) with message %s from %s", len(cmds), msg.Content, msg.Author.Username)
+		fmt.Printf("Got %v match(es) with message '%s' from User %s", len(cmds), msg.Content, msg.Author.Username)
 		for _, cmd := range cmds {
 			if cmd.Script {
 				res, err := b.execScript(msg.Content, cmd, session, msg)

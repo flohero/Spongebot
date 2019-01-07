@@ -13,7 +13,7 @@ Manage a discord bot via a REST API and an Angular Website.
 - [Managing the bot](#managing-the-bot)
 - [Commands Usage](#commands-usage)
   - [Scripting](#scripting)
-    - [The `s` struct and builtin function](#the-s-struct-and-builtin-function)
+    - [The `s` struct and builtin functions](#the-s-struct-and-builtin-functions)
     - [Example](#example)
 - [ToDo](#todo)
 
@@ -23,14 +23,13 @@ I hated to manage my bot just over source files or via command line, so i made a
 # Build
 To run this Project you need a postgresql instance and a webserver like apache2.
 
-1. Build the go app, with go modules enabled
+1. Build the go app, with go modules enabled.
 2. Then rename `.env.sample` to `.env` and add the required informations, like postgresql host, port, discord bot token, etc.
-3. The angular website is located in the `website` directory
-4. Before you can build the website you have to add the host entry in `website/environment/environment.prod.ts`
-5. Then build the website with `npm run-script "build prod"`
-6. After that copy the content of `website/dist/website` to your webserver
-7. Now you can run the go app you build at step 1
-8. The bot should come online on your discord server
+3. The angular website is located in the `website` directory.
+4. Before you can build the website you have to add the host entry in `website/environment/environment.prod.ts`.
+5. Then build the website with `npm run-script "build go"`, this will build the website and put the output in the `static` folder in the parentdirectory of the website.
+6. Now you can run the go app you build at step 1.
+7. The bot should come online on your discord server and the website should be available under port `:80`.
 
 > NOTE: Right now the bot needs admin rights on the discord server to properply function.
 

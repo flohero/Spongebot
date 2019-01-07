@@ -23,7 +23,7 @@ func (c *Controller) JwtAuthentication(next http.Handler) http.Handler {
 		//check if request does not need authentication, serve the request if it doesn't need it
 		for _, value := range notAuth {
 
-			if value == requestPath {
+			if strings.HasPrefix(requestPath, value) {
 				next.ServeHTTP(w, r)
 				return
 			}
@@ -35,7 +35,7 @@ func (c *Controller) JwtAuthentication(next http.Handler) http.Handler {
 		}
 
 		for _, v := range specialPrivileges {
-			if strings.Contains(requestPath, v) {
+			if strings.HasPrefix(requestPath, v) {
 				if !tk.Admin {
 					forbidden(w, errors.New(fmt.Sprint("You don't have admin privileges!")))
 					return

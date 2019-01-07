@@ -15,6 +15,12 @@ type Controller struct {
 func Serve(persistence *database.Persistence) {
 	c := &Controller{persistence: persistence}
 	r := mux.NewRouter()
+	r2 := mux.NewRouter()
+	fs := http.FileServer(http.Dir("./static/"))
+	r2.PathPrefix("/").Handler(
+		http.StripPrefix("/", fs))
+
+	go http.ListenAndServe(":80", r2)
 
 	// API
 	r.Use(corsAndContentTypeHeader)

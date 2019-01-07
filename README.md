@@ -70,5 +70,5 @@ This script will return the message in uppercase.
 - [ ] Better tests
 - [ ] Make more discord commands available, like ban, votekick, etc
 - [x] Better README.md
-- [ ] Host the angular website with go http
+- [x] Host the angular website with go http
 - [ ] Check required rights of the bot on the discord server

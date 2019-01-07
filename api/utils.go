@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func writeJson(w http.ResponseWriter, obj interface{}) {
@@ -44,6 +45,10 @@ func corsAndContentTypeHeader(next http.Handler) http.Handler {
 		if r.Method == "OPTIONS" {
 			w.Header().Add("Access-Control-Allow-Headers", "Content-Type, authorization")
 			w.WriteHeader(200)
+			return
+		}
+		if strings.HasPrefix(r.RequestURI, "/static/") {
+			w.Header().Add("Content-Type", "text/html; charset=utf-8")
 			return
 		}
 		w.Header().Add("Content-Type", "application/json")

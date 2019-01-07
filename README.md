@@ -48,7 +48,7 @@ You can create custom functionality through
 a python dialect and [starlight-go](https://github.com/starlight-go/starlight). 
 It's simple to use, the program provides a struct called `s` which contains two fields, 
 
-### The `s` struct and builtin function
+### The `s` struct and builtin functions
 With s you can call builtin variables. You call them, like in many programming languages, with `s.`.
 
 | Name         |                                                                                                                             Type |

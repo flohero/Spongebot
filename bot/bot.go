@@ -35,6 +35,7 @@ func Listen(config *model.Config, persistence *database.Persistence) {
 	}
 	bot := Bot{persistence: persistence, config: config}
 	discord.AddHandler(bot.onMessage)
+	discord.AddHandler(onReady)
 }
 
 func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate) {
@@ -138,4 +139,12 @@ func sendingMessageError(msg *discordgo.Message, err error) {
 	if err != nil {
 		fmt.Printf("Error sending message: %s\n%s", msg.Content, err)
 	}
+}
+
+func onReady(discord *discordgo.Session, ready *discordgo.Ready) {
+	err := discord.UpdateStatus(0, "_help for help")
+	if err != nil {
+		println("Error setting status")
+	}
+	fmt.Printf("Bot started on %v servers\n", len(discord.State.Guilds))
 }

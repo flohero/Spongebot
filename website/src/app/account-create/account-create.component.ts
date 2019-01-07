@@ -13,7 +13,7 @@ import {Router} from '@angular/router';
 })
 export class AccountCreateComponent implements OnInit {
   errorMsg = '';
-  passwordMatch = true;
+  passwordMatch = false;
   accountForm = this.fb.group({
     username:   ['', Validators.required],
     password:   ['', Validators.required],

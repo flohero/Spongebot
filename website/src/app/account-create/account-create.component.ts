@@ -39,6 +39,9 @@ export class AccountCreateComponent implements OnInit {
   }
 
   onSubmit() {
+    if (!this.passwordMatch) {
+      return;
+    }
     this.errorMsg = '';
     const account = new Account();
     account.username = this.accountForm.get('username').value;

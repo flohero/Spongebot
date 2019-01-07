@@ -2,6 +2,16 @@
 :root {
   --new-blue: rgb(7, 71, 166);
   --new-white: rgb(222, 235, 255);
+  --darkest-blue : rgba(9, 30, 66, 0.25);
+  --active-blue: #000080;
+}
+
+.hover-bg-darkest-blue:hover {
+  background-color: var(--darkest-blue);
+}
+
+.active-bg-dark-blue:active {
+  background-color: var(--active-blue);
 }
 
 .bg-new-blue {
@@ -30,6 +40,10 @@
 
 .h-4 {
   height: 4%;
+}
+
+.h-5 {
+  height: 5%;
 }
 
 .h-90 { height: 90%; }

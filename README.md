@@ -39,13 +39,12 @@ If the bot and website are running, you can manage the bot. The standard login c
 # Commands Usage
 Commands are regular expression, which means every message will be matched against all commands. This means a message can match more then one time, in this case the bot will execute all of them.
 
-The can reply with simple static responses or you can build your own reply via scripts.
+The bot can reply with simple static responses or you can build your own reply via scripts.
 
 ## Scripting
 You can create custom functionality through 
 [starlark](https://docs.bazel.build/versions/master/skylark/language.html), 
-a python dialect and [starlight-go](https://github.com/starlight-go/starlight). 
-It's simple to use, the program provides a struct called `s` which contains two fields, 
+a python dialect and [starlight-go](https://github.com/starlight-go/starlight).  
 
 ### The `s` struct and builtin functions
 With s you can call builtin variables. You call them, like in many programming languages, with `s.`.

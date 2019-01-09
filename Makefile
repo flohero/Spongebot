@@ -1,4 +1,5 @@
 include .env
+include .env.sample
 export
 MAKEFLAGS += --silent
 

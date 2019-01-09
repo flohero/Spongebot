@@ -1,6 +1,4 @@
-include .env
-include .env.sample
-export
+export GO111MODULE=on
 MAKEFLAGS += --silent
 
 build:

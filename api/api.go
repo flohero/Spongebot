@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/flohero/Spongebot/channel"
 	"github.com/flohero/Spongebot/database"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -10,9 +11,10 @@ import (
 
 type Controller struct {
 	persistence *database.Persistence
+	stopBotChan chan channel.StopFlag
 }
 
-func Serve(persistence *database.Persistence) {
+func Serve(persistence *database.Persistence, stopBotChan chan channel.StopFlag) {
 	c := &Controller{persistence: persistence}
 	r := mux.NewRouter()
 	r2 := mux.NewRouter()

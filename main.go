@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/flohero/Spongebot/api"
 	"github.com/flohero/Spongebot/bot"
+	"github.com/flohero/Spongebot/channel"
 	"github.com/flohero/Spongebot/database"
 	"github.com/flohero/Spongebot/database/model"
 	"github.com/joho/godotenv"
@@ -20,9 +21,9 @@ func init() {
 func main() {
 	persistence := database.InitDb()
 	var conf *model.Config
-	conf = persistence.FindConfigById(1)
+	conf, err := persistence.FindFirstActiveConfig()
 	var token string
-	if conf.Id != 0 {
+	if err == nil {
 		println("Used token from DB")
 		token = conf.Token
 	} else {
@@ -33,8 +34,10 @@ func main() {
 		println("Used token from Env")
 		conf.Token = token
 		conf.Prefix = "_"
+		conf.Active = true
 		persistence.CreateConfig(conf)
 	}
-	go bot.Listen(conf, persistence)
-	api.Serve(persistence)
+	stopChan := make(chan channel.StopFlag)
+	go bot.Listen(conf, persistence, stopChan)
+	api.Serve(persistence, stopChan)
 }

@@ -12,6 +12,12 @@ func (p *Persistence) FindConfigById(id int) (conf *model.Config) {
 	return conf
 }
 
+func (p *Persistence) FindFirstActiveConfig() (*model.Config, error) {
+	conf := &model.Config{}
+	err := p.db.Where(&model.Config{Active: true}).First(conf).Error
+	return conf, err
+}
+
 func (p *Persistence) FindConfigByToken(token string) (config *model.Config) {
 	config = &model.Config{}
 	p.db.Where(&model.Config{Token: token}).First(config)

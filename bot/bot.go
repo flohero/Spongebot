@@ -4,17 +4,17 @@ import (
 	"errors"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/flohero/Spongebot/channel"
 	"github.com/flohero/Spongebot/database"
 	"github.com/flohero/Spongebot/database/model"
-	"github.com/starlight-go/starlight"
-	"time"
 )
 
-const prefix string = "_"
+var prefix string = "_"
 
 type Bot struct {
 	persistence *database.Persistence
 	config      *model.Config
+	session     *discordgo.Session
 }
 
 type scriptResult struct {
@@ -24,7 +24,8 @@ type scriptResult struct {
 	AuthorId string
 }
 
-func Listen(config *model.Config, persistence *database.Persistence) {
+func Listen(config *model.Config, persistence *database.Persistence, stopChan chan channel.StopFlag) {
+	prefix = config.Prefix
 	discord, err := discordgo.New(fmt.Sprintf("Bot %s", config.Token))
 	if err != nil {
 		panic(err)
@@ -33,16 +34,22 @@ func Listen(config *model.Config, persistence *database.Persistence) {
 	if err = discord.Open(); err != nil {
 		panic(err)
 	}
-	bot := Bot{persistence: persistence, config: config}
+	bot := Bot{persistence: persistence, config: config, session: discord}
+	discord.AddHandler(bot.onReady)
 	discord.AddHandler(bot.onMessage)
-	discord.AddHandler(onReady)
+	for {
+		select {
+		case <-stopChan:
+			println("Stopping bot...")
+			return
+		}
+	}
 }
 
 func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate) {
 	if msg.Author.ID == session.State.User.ID {
 		return
 	}
-
 	if cmds, err := b.persistence.FindCommandByRegex(msg.Content); len(cmds) != 0 && err == nil {
 		fmt.Printf("Got %v match(es) with message '%s' from User %s\n", len(cmds), msg.Content, msg.Author.Username)
 		for _, cmd := range cmds {
@@ -52,11 +59,11 @@ func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate
 					fmt.Printf("\nError running script: %s", err)
 					b.sendError(session, msg, errors.New(fmt.Sprintf("Error running script [id: %v]: %s", cmd.Id, err.Error())))
 					return
-				}
-				if res == "" {
+				} else if res == "" {
 					println("No result")
+				} else {
+					b.respondToMessage(session, msg, res)
 				}
-				b.respondToMessage(session, msg, res)
 			} else {
 				b.respondToMessage(session, msg, cmd.Response)
 			}
@@ -69,79 +76,7 @@ func (b *Bot) onMessage(session *discordgo.Session, msg *discordgo.MessageCreate
 	}
 }
 
-func (b *Bot) sendHelp(session *discordgo.Session, msg *discordgo.MessageCreate) {
-	fields := make([]*discordgo.MessageEmbedField, 0)
-	cmds, err := b.persistence.FindAllCommands()
-	if err != nil {
-		b.sendError(session, msg, errors.New("error finding commands"))
-		return
-	}
-	for _, v := range cmds {
-		fields = append(fields, &discordgo.MessageEmbedField{
-			Name:  v.Regex,
-			Value: v.Description,
-		})
-	}
-	b.sendEmbed(session, msg,
-		buildEmbed(0x00ff00, "HELP",
-			"These commands are available. Keep in mind that all commands are regular expressions. https://www.regular-expressions.info/",
-			fields, nil, nil),
-	)
-
-}
-
-func (b *Bot) respondToMessage(session *discordgo.Session, msg *discordgo.MessageCreate, content string) {
-	sendingMessageError(session.ChannelMessageSend(msg.ChannelID, content))
-}
-
-func (b *Bot) sendEmbed(session *discordgo.Session, msg *discordgo.MessageCreate, embed *discordgo.MessageEmbed) {
-	sendingMessageError(session.ChannelMessageSendEmbed(msg.ChannelID, embed))
-}
-
-func (b *Bot) sendError(session *discordgo.Session, msg *discordgo.MessageCreate, err error) {
-	embed := buildEmbed(0xFF0000, "Error", err.Error(), nil, nil, nil)
-	b.sendEmbed(session, msg, embed)
-}
-
-func (b *Bot) execScript(message string, cmd *model.Command, session *discordgo.Session, msg *discordgo.MessageCreate) (string, error) {
-	s := &scriptResult{
-		Message:  message,
-		GuildId:  msg.GuildID,
-		AuthorId: msg.Author.ID,
-	}
-	globals := map[string]interface{}{
-		"s":        s,
-		"kickUser": session.GuildMemberDeleteWithReason,
-	}
-	_, err := starlight.Eval([]byte(cmd.Response), globals, nil)
-	if err != nil {
-		return "", err
-	}
-	return s.Result, nil
-}
-
-func buildEmbed(color int, title, description string,
-	fields []*discordgo.MessageEmbedField, image *discordgo.MessageEmbedImage,
-	thumbnail *discordgo.MessageEmbedThumbnail) *discordgo.MessageEmbed {
-	return &discordgo.MessageEmbed{
-		Author:      &discordgo.MessageEmbedAuthor{},
-		Color:       color, // 0x00ff00
-		Description: description,
-		Fields:      fields,
-		Image:       image,
-		Thumbnail:   thumbnail,
-		Timestamp:   time.Now().Format(time.RFC3339), // Discord wants ISO8601; RFC3339 is an extension of ISO8601 and should be completely compatible.
-		Title:       title,
-	}
-}
-
-func sendingMessageError(msg *discordgo.Message, err error) {
-	if err != nil {
-		fmt.Printf("Error sending message: %s\n%s", msg.Content, err)
-	}
-}
-
-func onReady(discord *discordgo.Session, ready *discordgo.Ready) {
+func (b *Bot) onReady(discord *discordgo.Session, ready *discordgo.Ready) {
 	err := discord.UpdateStatus(0, "_help for help")
 	if err != nil {
 		println("Error setting status")

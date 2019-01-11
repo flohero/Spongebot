@@ -46,7 +46,11 @@
   height: 5%;
 }
 
+.h-10 { height: 10%; }
+
 .h-90 { height: 90%; }
+
+.h-96 { height: 96%; }
 
 .h-99 { height: 99%; }
 

@@ -6,9 +6,9 @@ import (
 	"github.com/flohero/Spongebot/channel"
 	"github.com/flohero/Spongebot/database"
 	"github.com/flohero/Spongebot/database/model"
+	"github.com/flohero/Spongebot/utils"
 	"github.com/joho/godotenv"
 	"log"
-	"os"
 )
 
 func init() {
@@ -16,6 +16,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	utils.InitEnvironment()
 }
 
 func main() {
@@ -27,7 +28,7 @@ func main() {
 		println("Used token from DB")
 		token = conf.Token
 	} else {
-		token = os.Getenv("token")
+		token = utils.Environment["DISCORD_TOKEN"]
 		if token == "" {
 			panic("No token provided")
 		}

@@ -3,9 +3,9 @@ package database
 import (
 	"fmt"
 	"github.com/flohero/Spongebot/database/model"
+	"github.com/flohero/Spongebot/utils"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"os"
 )
 
 type Persistence struct {
@@ -24,11 +24,11 @@ func InitDb() *Persistence {
 }
 
 func connectToPostgres() (*gorm.DB, error) {
-	host := os.Getenv("POSTGRES_HOST")
-	port := os.Getenv("POSTGRES_PORT")
-	user := os.Getenv("POSTGRES_USER")
-	pw := os.Getenv("POSTGRES_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
+	host := utils.Environment["POSTGRES_HOST"]
+	port := utils.Environment["POSTGRES_PORT"]
+	user := utils.Environment["POSTGRES_USER"]
+	pw := utils.Environment["POSTGRES_PASSWORD"]
+	dbName := utils.Environment["DB_NAME"]
 	return gorm.Open("postgres",
 		fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", host, port, user, dbName, pw))
 }

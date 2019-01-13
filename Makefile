@@ -3,7 +3,7 @@ MAKEFLAGS += -B
 
 all: clean website build
 
-release: windows linux
+release: windows linux website
 
 linux-release: linux website
 

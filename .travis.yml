@@ -19,6 +19,7 @@ deploy:
   file:
   - Spongebot.linux
   - Spongebot.windows.exe
-  - /static/
+  - static/
   on:
+    tags: true
     repo: flohero/Spongebot

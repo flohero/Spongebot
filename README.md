@@ -9,6 +9,7 @@ Manage a discord bot via a REST API and an Angular Website.
 
 - [Spongebot](#spongebot)
 - [Why](#why)
+- [Releases](#releases)
 - [Build](#build)
 - [Managing the bot](#managing-the-bot)
 - [Commands Usage](#commands-usage)
@@ -19,6 +20,9 @@ Manage a discord bot via a REST API and an Angular Website.
 
 # Why
 I hated to manage my bot just over source files or via command line, so i made a simple REST API and website to manage my bot.
+
+# Releases
+On the releases page are the build executables for linux and windows, without the website, it is just the api and the bot.
 
 # Build
 To run this Project you need a postgresql instance and a webserver like apache2.

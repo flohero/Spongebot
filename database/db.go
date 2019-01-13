@@ -19,7 +19,7 @@ func InitDb() *Persistence {
 	}
 	p := &Persistence{db: db}
 	p.createDB()
-	p.initData()
+	//p.initData()
 	return p
 }
 
@@ -39,7 +39,7 @@ func connectToSqlite() (*gorm.DB, error) {
 
 func (p *Persistence) createDB() {
 	//p.db.DropTable(&model.Command{})
-	p.db.DropTable(&model.Account{})
+	//p.db.DropTable(&model.Account{})
 	p.db.CreateTable(&model.Command{})
 	p.db.CreateTable(&model.Config{})
 	p.db.CreateTable(&model.Account{})

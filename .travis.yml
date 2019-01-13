@@ -17,7 +17,7 @@ deploy:
   api_key:
     secure: Tm4NKzruDBrXBFTp/HcQ0vqKWFzDHXunaWUKLb7gZqoQYzwHQCMvAhWtkwTVcQIpsoOxFLltDTgnb2pezDzB/4OA2A8TlL77LBfglhgI0NL4UJOAJqKw3zkOBu4hNVb8RsnqNVPbakmhqKFPGTxvF6rF5ExoI65v/aAvEpeJkUAz2LtRHpJgWAXNaKq39D8lUAI8gpoRI6EVlk/ewtYMSAJXdRXc4FTQPliuz+nwiC2yeNM/7HhDqSjpTy0U5w1EJIKqyd3GP1tj7gNzqeBMww5vCagOtOanZHqwtTKmkuEo1T9b1MQYeJHJJY8dzMlyCYBx3tVhOZRRSeTKMy+U36Y1nliejAmp0zeCwASUHpYUyaQoUVFMLshQVrQUZVB1VMZzGjajCfzl4EAdS75gMy4RoEG1tOQoI5sfjS10qXyrkFKMDDFms60cf9Y+2d5ysOpGqggo1nIcoDetklPW1s2tW1UlyvsJTmpzX+Ldy6YivI3xjLR+L+GFfXZPumUB8DiLylhVu8RkaeoejfVyLWbsTMpFa/TK2fJnQfh8e76s7tCSZx0TahEOTfb9vadmSJrsv+mHrLZ/ibYfa65OxSCA9syrswaHcr3zjZbkpuhJWFkSEwfmWpPxiXXM/sSfJkIBsRngdHnR0r7nHV88JbZ583HMGcfJ4SmORCBm4Ts=
   file:
-  - "/Spongebot*"
-  - "/static/"
+  - Spongebot
+  - /static/
   on:
     repo: flohero/Spongebot

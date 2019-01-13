@@ -23,4 +23,4 @@ website:
 
 clean:
 	rm -rf ./static/;
-	rm ./Spongebot.*;
+	rm ./Spongebot*;

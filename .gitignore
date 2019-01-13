@@ -2,6 +2,7 @@
 bot.db
 /build/**
 /static/**
+/static*
 Spongebot*
 spongebot*
 # Created by https://www.gitignore.io/api/go,windows,intellij+all

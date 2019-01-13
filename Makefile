@@ -23,7 +23,7 @@ run:
 	go run main.go
 
 website:
-	cd ./website/; echo "I'm in some_dir"; \
+	cd ./website/;
 	npm run-script "build go";
 
 clean:

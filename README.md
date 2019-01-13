@@ -22,7 +22,7 @@ Manage a discord bot via a REST API and an Angular Website.
 I hated to manage my bot just over source files or via command line, so i made a simple REST API and website to manage my bot.
 
 # Releases
-On the releases page are the build executables for linux and windows, without the website, it is just the api and the bot.
+On the releases page are the build executables for linux and windows, without the website, it is just the api and the bot. Before running the executable you have to include the .env file.
 
 # Build
 To run this Project you need a postgresql instance and a webserver like apache2.

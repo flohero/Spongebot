@@ -3,7 +3,9 @@ MAKEFLAGS += -B
 
 all: clean website build
 
-linux_arm: clean website
+linux-release: linux website
+
+linux-arm: clean website
 	env GOOS=linux GOARCH=arm GOARM=5 go build
 
 linux: clean website
@@ -21,4 +23,4 @@ website:
 
 clean:
 	rm -rf ./static/;
-	rm ./Spongebot.exe;
+	rm ./Spongebot.*;

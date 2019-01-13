@@ -1,7 +1,14 @@
-language: go
-go:
-  - 1.11.x
-env:
-  - GO111MODULE=on
-install: true
-script: make build
+matrix:
+  include:
+    - language: go
+      go: 1.11
+      script:
+        - go build
+
+    - language: node_js
+      node_js: 11.6
+      before_script:
+        - cd website
+        - npm i
+      script:
+        - npm run-script "build go"

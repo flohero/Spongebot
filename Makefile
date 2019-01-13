@@ -8,7 +8,7 @@ release: windows linux
 linux-release: linux website
 
 linux-arm:
-	env GOOS=linux GOARCH=arm GOARM=5 go build
+	env GOOS=linux GOARCH=arm GOARM=5 go build -o Spongebot.linux.arm
 
 linux:
 	env GOOS=linux GOARCH=amd64 GOARM=5 go build -o Spongebot.linux

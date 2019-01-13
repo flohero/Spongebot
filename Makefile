@@ -3,13 +3,18 @@ MAKEFLAGS += -B
 
 all: clean website build
 
+release: windows linux
+
 linux-release: linux website
 
-linux-arm: clean website
+linux-arm:
 	env GOOS=linux GOARCH=arm GOARM=5 go build
 
-linux: clean website
-	env GOOS=linux GOARCH=amd64 GOARM=5 go build
+linux:
+	env GOOS=linux GOARCH=amd64 GOARM=5 go build -o Spongebot.linux
+
+windows:
+	env GOOS=windows GOARCH=amd64 go build -o Spongebot.windows.exe
 
 build:
 	go build

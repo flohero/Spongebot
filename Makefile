@@ -1,7 +1,7 @@
 export GO111MODULE=on
 MAKEFLAGS += -B
 
-all: website build
+local: website build
 
 release: windows linux
 
@@ -17,14 +17,18 @@ windows:
 	env GOOS=windows GOARCH=amd64 go build -o Spongebot.windows.exe
 
 build:
-	go build
+	go build -o ./out/Spongebot
 
 run:
 	go run main.go
 
 website:
+	cd ./website/; npm i;npm run-script "build release"
+
+website-static:
 	cd ./website/; npm i;npm run-script "build go"
 
 clean:
-	rm -rf ./static/;
-	rm ./Spongebot*;
+	rm -rf ./static/ || true;
+	rm ./Spongebot* || true;
+	rm -r ./out || true;

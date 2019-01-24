@@ -19,7 +19,7 @@ func InitDb() *Persistence {
 	}
 	p := &Persistence{db: db}
 	p.createDB()
-	//p.initData()
+	p.initData()
 	return p
 }
 

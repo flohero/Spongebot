@@ -15,5 +15,7 @@ func InitEnvironment() {
 		"POSTGRES_USER":     os.Getenv("POSTGRES_USER"),
 		"POSTGRES_PASSWORD": os.Getenv("POSTGRES_PASSWORD"),
 		"DB_NAME":           os.Getenv("DB_NAME"),
+		"PORT_API":          os.Getenv("PORT_API"),
+		"PORT_WEBSITE":      os.Getenv("PORT_WEBSITE"),
 	}
 }

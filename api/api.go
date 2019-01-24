@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"github.com/flohero/Spongebot/channel"
 	"github.com/flohero/Spongebot/database"
 	"github.com/gorilla/handlers"
@@ -22,7 +23,7 @@ func Serve(persistence *database.Persistence, stopBotChan chan channel.StopFlag)
 	r2.PathPrefix("/").Handler(
 		http.StripPrefix("/", fs))
 
-	go http.ListenAndServe(":80", r2)
+	go runWebsite(r2, "8081")
 
 	// API
 	r.Use(corsAndContentTypeHeader)
@@ -49,4 +50,11 @@ func Serve(persistence *database.Persistence, stopBotChan chan channel.StopFlag)
 
 	loggedRouter := handlers.LoggingHandler(os.Stdout, r)
 	panic(http.ListenAndServe(":8080", loggedRouter))
+}
+
+func runWebsite(r *mux.Router, port string) {
+	err := http.ListenAndServe(fmt.Sprintf(":%s", port), r)
+	if err != nil {
+		panic(err)
+	}
 }

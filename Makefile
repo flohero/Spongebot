@@ -1,7 +1,7 @@
 export GO111MODULE=on
 MAKEFLAGS += -B
 
-all: clean website build
+all: website build
 
 release: windows linux
 
@@ -23,8 +23,7 @@ run:
 	go run main.go
 
 website:
-	cd ./website/;
-	npm run-script "build go";
+	cd ./website/; npm i;npm run-script "build go"
 
 clean:
 	rm -rf ./static/;
